@@ -9,7 +9,9 @@ description: "Task list template for feature implementation"
 
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
-**Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
+**Tests**: Tests are REQUIRED for every feature and bug fix. Test tasks MUST precede the
+corresponding implementation tasks and MUST include verification that each new test fails for
+the expected reason before implementation begins.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
@@ -21,10 +23,10 @@ description: "Task list template for feature implementation"
 
 ## Path Conventions
 
-- **Single project**: `src/`, `tests/` at repository root
-- **Web app**: `backend/src/`, `frontend/src/`
-- **Mobile**: `api/src/`, `ios/src/` or `android/src/`
-- Paths shown below assume single project - adjust based on plan.md structure
+- **NestJS backend**: `src/<module>/controller/`, `src/<module>/service/`, and
+  `src/<module>/repository/`
+- Tests are colocated with the controller, service, or repository they verify.
+- Paths shown below are examples; replace every placeholder with the paths from `plan.md`.
 
 <!--
   ============================================================================
@@ -50,8 +52,8 @@ description: "Task list template for feature implementation"
 **Purpose**: Project initialization and basic structure
 
 - [ ] T001 Create project structure per implementation plan
-- [ ] T002 Initialize [language] project with [framework] dependencies
-- [ ] T003 [P] Configure linting and formatting tools
+- [ ] T002 Initialize or update the TypeScript/NestJS project dependencies
+- [ ] T003 [P] Configure linting, formatting, and changed-code coverage tools
 
 ---
 
@@ -80,21 +82,22 @@ Examples of foundational tasks (adjust based on your project):
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 1 (OPTIONAL - only if tests requested) ⚠️
+### Tests for User Story 1 (REQUIRED) ⚠️
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T010 [P] [US1] Write contract test for [endpoint] in src/[module]/controller/[module].controller.spec.ts
+- [ ] T011 [P] [US1] Write service test for [behavior] in src/[module]/service/[service]/[service].service.spec.ts
+- [ ] T012 [US1] Run the new tests and verify they fail for the expected missing behavior
 
 ### Implementation for User Story 1
 
-- [ ] T012 [P] [US1] Create [Entity1] model in src/models/[entity1].py
-- [ ] T013 [P] [US1] Create [Entity2] model in src/models/[entity2].py
-- [ ] T014 [US1] Implement [Service] in src/services/[service].py (depends on T012, T013)
-- [ ] T015 [US1] Implement [endpoint/feature] in src/[location]/[file].py
-- [ ] T016 [US1] Add validation and error handling
-- [ ] T017 [US1] Add logging for user story 1 operations
+- [ ] T013 [P] [US1] Create domain model in src/[module]/service/[service]/[service].model.ts
+- [ ] T014 [P] [US1] Define repository abstraction in src/[module]/repository/[repository]/[repository].repository.interface.ts
+- [ ] T015 [US1] Implement service in src/[module]/service/[service]/[service].service.ts
+- [ ] T016 [US1] Implement repository in src/[module]/repository/[repository]/
+- [ ] T017 [US1] Implement DTO and controller in src/[module]/controller/
+- [ ] T018 [US1] Add validation, authorization, error handling, and public API doc comments
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -106,17 +109,18 @@ Examples of foundational tasks (adjust based on your project):
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 2 (OPTIONAL - only if tests requested) ⚠️
+### Tests for User Story 2 (REQUIRED) ⚠️
 
-- [ ] T018 [P] [US2] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T019 [P] [US2] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T019 [P] [US2] Write controller test in src/[module]/controller/[module].controller.spec.ts
+- [ ] T020 [P] [US2] Write service test in src/[module]/service/[service]/[service].service.spec.ts
+- [ ] T021 [US2] Run the new tests and verify they fail for the expected missing behavior
 
 ### Implementation for User Story 2
 
-- [ ] T020 [P] [US2] Create [Entity] model in src/models/[entity].py
-- [ ] T021 [US2] Implement [Service] in src/services/[service].py
-- [ ] T022 [US2] Implement [endpoint/feature] in src/[location]/[file].py
-- [ ] T023 [US2] Integrate with User Story 1 components (if needed)
+- [ ] T022 [P] [US2] Define domain model and interfaces under src/[module]/
+- [ ] T023 [US2] Implement service and repository under src/[module]/
+- [ ] T024 [US2] Implement DTO and controller under src/[module]/controller/
+- [ ] T025 [US2] Integrate with User Story 1 components (if needed)
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
@@ -128,16 +132,17 @@ Examples of foundational tasks (adjust based on your project):
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 3 (OPTIONAL - only if tests requested) ⚠️
+### Tests for User Story 3 (REQUIRED) ⚠️
 
-- [ ] T024 [P] [US3] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T025 [P] [US3] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T026 [P] [US3] Write controller test in src/[module]/controller/[module].controller.spec.ts
+- [ ] T027 [P] [US3] Write service test in src/[module]/service/[service]/[service].service.spec.ts
+- [ ] T028 [US3] Run the new tests and verify they fail for the expected missing behavior
 
 ### Implementation for User Story 3
 
-- [ ] T026 [P] [US3] Create [Entity] model in src/models/[entity].py
-- [ ] T027 [US3] Implement [Service] in src/services/[service].py
-- [ ] T028 [US3] Implement [endpoint/feature] in src/[location]/[file].py
+- [ ] T029 [P] [US3] Define domain model and interfaces under src/[module]/
+- [ ] T030 [US3] Implement service and repository under src/[module]/
+- [ ] T031 [US3] Implement DTO and controller under src/[module]/controller/
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -154,8 +159,11 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX [P] Documentation updates in docs/
 - [ ] TXXX Code cleanup and refactoring
 - [ ] TXXX Performance optimization across all stories
-- [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
+- [ ] TXXX [P] Add any cross-cutting unit and integration tests
 - [ ] TXXX Security hardening
+- [ ] TXXX Run lint and the complete test suite
+- [ ] TXXX Verify at least 80% coverage for new and modified behavior
+- [ ] TXXX Verify explicit typing, no `any`, and doc comments for public APIs
 - [ ] TXXX Run quickstart.md validation
 
 ---
@@ -179,7 +187,7 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Within Each User Story
 
-- Tests (if included) MUST be written and FAIL before implementation
+- Tests MUST be written and observed failing for the expected reason before implementation
 - Models before services
 - Services before endpoints
 - Core implementation before integration
@@ -199,13 +207,13 @@ Examples of foundational tasks (adjust based on your project):
 ## Parallel Example: User Story 1
 
 ```bash
-# Launch all tests for User Story 1 together (if tests requested):
-Task: "Contract test for [endpoint] in tests/contract/test_[name].py"
-Task: "Integration test for [user journey] in tests/integration/test_[name].py"
+# Write independent tests for User Story 1 together:
+Task: "Controller test for [endpoint] in src/[module]/controller/[module].controller.spec.ts"
+Task: "Service test for [behavior] in src/[module]/service/[service]/[service].service.spec.ts"
 
-# Launch all models for User Story 1 together:
-Task: "Create [Entity1] model in src/models/[entity1].py"
-Task: "Create [Entity2] model in src/models/[entity2].py"
+# Define independent abstractions for User Story 1 together:
+Task: "Create [Entity] domain model in src/[module]/service/[service]/[service].model.ts"
+Task: "Create repository interface in src/[module]/repository/[repository]/[repository].repository.interface.ts"
 ```
 
 ---

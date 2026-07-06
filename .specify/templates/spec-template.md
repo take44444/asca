@@ -98,6 +98,17 @@
 - **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
 - **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
 
+### Architecture and Quality Requirements *(mandatory)*
+
+- **AQ-001**: Define the controller, service/domain, and repository responsibilities affected
+  by this feature, including the abstractions between them.
+- **AQ-002**: Define testable behavior for every feature or bug-fix requirement so tests can
+  be written and observed failing before implementation.
+- **AQ-003**: Identify validation, authorization, persistence, or public API documentation
+  obligations introduced or changed by this feature.
+- **AQ-004**: Define measurable quality verification, including lint, passing tests, and at
+  least 80% coverage for new or modified behavior.
+
 ### Key Entities *(include if feature involves data)*
 
 - **[Entity 1]**: [What it represents, key attributes without implementation]

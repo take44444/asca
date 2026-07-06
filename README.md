@@ -23,7 +23,15 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+A.S.C.A. (A Slightly Clever Agent) is an autonomous job assistant. This repository contains
+the NestJS backend harness and core agent logic; its frontend is maintained separately.
+
+## Development standards
+
+Architecture boundaries, required technology choices, test-driven development workflow, and
+merge quality gates are defined in the
+[project constitution](.specify/memory/constitution.md). Every feature plan and code review
+must verify compliance with that document.
 
 ## Project setup
 

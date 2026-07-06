@@ -40,7 +40,16 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- **Clean Architecture**: Identify controller, service/domain, and repository boundaries;
+  confirm services depend only on abstractions and use neither DTOs nor DAOs.
+- **Test-Driven Development**: Define how each behavior will be tested first and how the
+  initial failure will be verified before implementation.
+- **Quality Gates**: Identify lint, test, and changed-code coverage commands; the plan MUST
+  preserve the 80% minimum coverage requirement.
+- **Technical Constraints**: Confirm the approved TypeScript/NestJS, validation, persistence,
+  authorization, testing, explicit-typing, no-`any`, and public-doc-comment requirements.
+- **Project Structure**: Map each feature component to the required module-local controller,
+  service, and repository directories.
 
 ## Project Structure
 
@@ -65,39 +74,25 @@ specs/[###-feature]/
 -->
 
 ```text
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
 src/
-├── models/
-├── services/
-├── cli/
-└── lib/
-
-tests/
-├── contract/
-├── integration/
-└── unit/
-
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
-backend/
-├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
-└── tests/
-
-frontend/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   └── services/
-└── tests/
-
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
-
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
+├── main.ts
+├── app.module.ts
+└── [module-name]/
+    ├── controller/
+    │   ├── [module-name].dto.ts
+    │   ├── [module-name].controller.ts
+    │   └── [module-name].controller.spec.ts
+    ├── service/[service-name]/
+    │   ├── [service-name].service.interface.ts
+    │   ├── [service-name].model.ts
+    │   ├── [service-name].service.ts
+    │   └── [service-name].service.spec.ts
+    └── repository/[repository-name]/
+        ├── [repository-name].repository.interface.ts
+        ├── [repository-name].dao.ts
+        ├── [repository-name].dev.repository.ts
+        ├── [repository-name].prod.repository.ts
+        └── [repository-name].repository.spec.ts
 ```
 
 **Structure Decision**: [Document the selected structure and reference the real

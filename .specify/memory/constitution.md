@@ -1,50 +1,102 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+- Version change: template (unratified) → 1.0.0
+- Modified principles:
+  - Template Principle 1 → I. Clean Architecture
+  - Template Principle 2 → II. Test-Driven Development (NON-NEGOTIABLE)
+  - Template Principle 3 → III. Quality Gates
+  - Template Principles 4 and 5 removed as unused placeholders
+- Added sections:
+  - Technical Constraints
+  - Development Workflow and Project Structure
+- Removed sections: none (template placeholders were replaced)
+- Templates requiring updates:
+  - ✅ updated: .specify/templates/plan-template.md
+  - ✅ updated: .specify/templates/spec-template.md
+  - ✅ updated: .specify/templates/tasks-template.md
+  - ✅ reviewed: .specify/templates/commands/*.md (directory not present)
+  - ✅ updated: README.md
+- Follow-up TODOs: none
+-->
+# A.S.C.A. Backend Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Clean Architecture
+Presentation, business logic, and data access MUST remain separate. Controllers MUST
+perform transport concerns only and delegate business behavior to services. Services MUST
+not depend on presentation types or implementations and MUST depend only on repository
+abstractions rather than concrete repository implementations.
+Repositories MUST own database and external data-source interactions, implement abstractions
+consumed by services, and contain no business logic. Dependency flow MUST NOT point from the
+service layer to concrete presentation or data-access implementations.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+Services MUST express business entities and behavior through domain models. DTOs and DAOs
+MUST NOT cross into the service layer. These boundaries keep core behavior independent of
+framework, transport, and persistence choices and make it independently testable.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### II. Test-Driven Development (NON-NEGOTIABLE)
+Every feature and bug fix MUST follow Red-Green-Refactor: write a test from the requirement,
+verify that it fails for the expected reason, implement the minimum behavior needed to pass,
+then refactor while the suite remains green. Each behavior change MUST include tests that
+demonstrate the new or corrected behavior. Implementation MUST NOT precede its defining test.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+This sequence provides executable evidence that tests can detect the missing behavior and
+prevents unverified production changes.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### III. Quality Gates
+Before code is merged, all applicable lint checks and tests MUST pass, changed code MUST
+conform to project coding standards, and new or modified behavior MUST achieve at least 80%
+code coverage. Coverage MUST be measured for the feature or fix rather than inferred solely
+from repository-wide coverage. A failed gate blocks merge unless an exception is documented
+and approved under Governance.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+These gates establish a consistent, measurable baseline for correctness and maintainability.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+## Technical Constraints
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+The backend MUST use TypeScript and NestJS. Input validation MUST use `class-validator`.
+Repository and database access MUST use Prisma. Production persistence MUST use PostgreSQL;
+development and automated tests MUST use SQLite unless a test specifically verifies
+PostgreSQL behavior. Authorization MUST use Auth.js, and NestJS tests MUST use
+`@nestjs/testing` where framework integration is involved.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+Code MUST follow the Google TypeScript Style Guide. Classes, interfaces, constants,
+variables, function parameters, and return values MUST have explicit types. The `any` type
+MUST NOT be used. Every public class, interface, and function MUST include a doc comment that
+describes its contract.
+
+## Development Workflow and Project Structure
+
+Each domain module MUST live directly under `src/<module-name>/` and contain `controller/`,
+`service/`, and `repository/` boundaries. Controllers and their DTOs belong in
+`controller/`. Each service capability belongs in a nested service directory containing its
+interface, domain model, implementation, and colocated specification. Each repository
+capability belongs in a nested repository directory containing its interface, DAO,
+environment-specific implementations where required, and colocated specification.
+
+Plans MUST document how dependency direction and domain-model isolation will be preserved.
+Specifications MUST define independently testable acceptance behavior. Task lists MUST place
+failing test creation before implementation and MUST include lint, test, and changed-code
+coverage verification. Reviews MUST verify architecture boundaries, test-first evidence,
+explicit typing, public API documentation, and all quality gates before approval.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution supersedes all other project practices and preferences. Any deviation MUST
+be documented with its scope and rationale and approved by project maintainers before merge.
+The approval MUST state whether the deviation is temporary and, if so, include a removal or
+migration plan.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+Amendments MUST include the reason, exact rule changes, approval by project maintainers, the
+amendment date, and a migration plan when existing code or workflow is affected. Constitution
+versions follow semantic versioning: MAJOR for incompatible governance or principle changes,
+MINOR for new principles or materially expanded obligations, and PATCH for clarifications
+that do not change obligations.
+
+Every implementation plan MUST pass the Constitution Check before research and again after
+design. Every pull request review MUST verify applicable constitutional rules and record any
+approved exception. Maintainers MUST review constitution compliance when amending this
+document and when recurring exceptions indicate that a rule or implementation needs change.
+
+**Version**: 1.0.0 | **Ratified**: 2026-07-06 | **Last Amended**: 2026-07-06
