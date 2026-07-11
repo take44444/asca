@@ -12,7 +12,7 @@
 
 **Purpose**: Add dependencies, Prisma scaffolding, and feature directories required by every story.
 
-- [ ] T001 Install validation, Auth.js, and Prisma dependencies in package.json and package-lock.json
+- [ ] T001 Install validation, `@nestjs/jwt`, and Prisma dependencies in package.json and package-lock.json
 - [ ] T002 Create Prisma schema with SQLite datasource and Agent model in prisma/schema.prisma
 - [ ] T003 [P] Create Prisma module and service skeleton in src/prisma/prisma.module.ts and src/prisma/prisma.service.ts
 - [ ] T004 [P] Create auth module directory structure in src/auth/auth.module.ts and src/auth/service/verify-auth-token/verify-auth-token.service.interface.ts
@@ -47,12 +47,12 @@
 
 - [ ] T012 [P] [US4] Write verify-token service tests for missing, malformed, invalid, and valid JWT outcomes in src/auth/service/verify-auth-token/verify-auth-token.service.spec.ts
 - [ ] T013 [P] [US4] Write controller authorization tests proving POST /agents, GET /agents, and DELETE /agents/:id reject unauthenticated requests before service calls in src/agents/controller/agents.controller.spec.ts
-- [ ] T014 [P] [US4] Write e2e tests for unauthenticated and invalid-token POST /agents, GET /agents, and DELETE /agents/test-id requests in test/agents.e2e-spec.ts
+- [ ] T014 [P] [US4] Write e2e tests for unauthenticated and invalid-token POST /agents, GET /agents, and DELETE /agents/test-id requests, including assertions that seeded agent data remains unchanged after rejected requests, in test/agents.e2e-spec.ts
 - [ ] T015 [US4] Run US4 tests with npm test and npm run test:e2e and verify they fail for missing authentication behavior in src/auth/service/verify-auth-token/verify-auth-token.service.spec.ts, src/agents/controller/agents.controller.spec.ts, and test/agents.e2e-spec.ts
 
 ### Implementation for User Story 4
 
-- [ ] T016 [US4] Implement Auth.js JWT bearer verification using AUTH_SECRET in src/auth/service/verify-auth-token/verify-auth-token.service.ts
+- [ ] T016 [US4] Implement `@nestjs/jwt` bearer verification using AUTH_SECRET in src/auth/service/verify-auth-token/verify-auth-token.service.ts
 - [ ] T017 [US4] Implement authenticated-user decorator or guard helper that exposes AuthenticatedUser to controllers in src/auth/controller/authenticated-user.decorator.ts
 - [ ] T018 [US4] Implement guarded AgentsController route skeletons for POST /agents, GET /agents, and DELETE /agents/:id in src/agents/controller/agents.controller.ts
 - [ ] T019 [US4] Register auth and agent providers in src/auth/auth.module.ts and src/agents/agents.module.ts
@@ -78,7 +78,7 @@
 
 ### Implementation for User Story 1
 
-- [ ] T026 [US1] Add create DTO with class-validator non-empty trimmed name validation in src/agents/controller/agent.dto.ts
+- [ ] T026 [US1] Add create DTO with class-validator validation that rejects missing, empty, or whitespace-only names after trimming in src/agents/controller/agent.dto.ts
 - [ ] T027 [US1] Implement create business behavior and domain mapping in src/agents/service/manage-agents/manage-agents.service.ts
 - [ ] T028 [US1] Implement Prisma create persistence and DAO mapping in src/agents/repository/agent-store/prisma-agent-store.repository.ts
 - [ ] T029 [US1] Implement POST /agents response mapping and validation pipe behavior in src/agents/controller/agents.controller.ts and src/main.ts

@@ -47,7 +47,8 @@
 - **Quality Gates**: Identify lint, test, and changed-code coverage commands; the plan MUST
   preserve the 80% minimum coverage requirement.
 - **Technical Constraints**: Confirm the approved TypeScript/NestJS, validation, persistence,
-  authorization, testing, explicit-typing, no-`any`, and public-doc-comment requirements.
+  `@nestjs/jwt` authentication, testing, explicit-typing, no-`any`, and public-doc-comment
+  requirements.
 - **Project Structure**: Map each feature component to the required module-local controller,
   service, and repository directories.
 

@@ -12,7 +12,7 @@ Add authenticated agent management for creating, listing, and deleting user-owne
 
 **Language/Version**: TypeScript 5.7 targeting ES2023 on Node.js 22 types
 
-**Primary Dependencies**: NestJS 11, `@nestjs/testing`, Jest, Supertest; add `class-validator`, `class-transformer`, Prisma, `@prisma/client`, and the project-approved Auth.js JWT verification dependency
+**Primary Dependencies**: NestJS 11, `@nestjs/testing`, Jest, Supertest; add `class-validator`, `class-transformer`, Prisma, `@prisma/client`, and `@nestjs/jwt` for bearer JWT verification
 
 **Storage**: Prisma-managed SQLite for development and automated tests; schema must remain portable to PostgreSQL for production follow-up
 
@@ -35,7 +35,7 @@ Add authenticated agent management for creating, listing, and deleting user-owne
 - **Clean Architecture**: PASS. The feature will use `src/agents/controller/` for HTTP and DTO concerns, `src/agents/service/manage-agents/` for domain behavior and ownership rules, and `src/agents/repository/agent-store/` for Prisma data access behind a repository interface. The service will depend on repository and authentication abstractions, not concrete persistence or transport types.
 - **Test-Driven Development**: PASS. Tasks must create failing controller, service, repository, and e2e tests before implementation. Initial failures should prove missing create/list/delete behavior, authentication rejection, validation rejection, and ownership scoping.
 - **Quality Gates**: PASS. Verification will run `npm run lint`, `npm test`, `npm run test:e2e`, and `npm run test:cov`; changed agent-management behavior must meet or exceed 80% coverage.
-- **Technical Constraints**: PASS. The plan uses TypeScript/NestJS, `class-validator`, Prisma, SQLite for dev/test, the approved Auth.js authorization mechanism, `@nestjs/testing`, explicit public contracts, no `any`, explicit types, and doc comments on public classes/interfaces/functions.
+- **Technical Constraints**: PASS. The plan uses TypeScript/NestJS, `class-validator`, Prisma, SQLite for dev/test, `@nestjs/jwt` authentication, `@nestjs/testing`, explicit public contracts, no `any`, explicit types, and doc comments on public classes/interfaces/functions.
 - **Project Structure**: PASS. All feature components map to `src/agents/` with controller, service, and repository subdirectories. Shared infrastructure is limited to authentication and Prisma provider modules needed by the feature.
 
 ## Project Structure
@@ -113,7 +113,7 @@ Detailed decisions are recorded in [research.md](./research.md). No `NEEDS CLARI
 - **Clean Architecture**: PASS. Data model and contract artifacts keep DTO/DAO/domain boundaries explicit, and the planned source layout prevents service dependency on controller or concrete repository implementations.
 - **Test-Driven Development**: PASS. Quickstart and research artifacts define behavior that will become failing tests before implementation.
 - **Quality Gates**: PASS. Quickstart includes lint, unit, e2e, and coverage verification commands with the 80% changed-code coverage target.
-- **Technical Constraints**: PASS. Artifacts retain TypeScript/NestJS, `class-validator`, Prisma, SQLite, Auth.js authorization, `@nestjs/testing`, explicit typing, no `any`, and doc-comment requirements.
+- **Technical Constraints**: PASS. Artifacts retain TypeScript/NestJS, `class-validator`, Prisma, SQLite, `@nestjs/jwt` authentication, `@nestjs/testing`, explicit typing, no `any`, and doc-comment requirements.
 - **Project Structure**: PASS. Planned files follow module-local controller/service/repository boundaries and isolate shared auth/prisma infrastructure.
 
 ## Complexity Tracking

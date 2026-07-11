@@ -101,7 +101,7 @@ A requester without valid authentication is denied access to all agent managemen
 
 - **AQ-001**: Planning MUST define the controller, service/domain, and repository responsibilities affected by this feature, including the abstractions between authentication, agent ownership rules, and persistence.
 - **AQ-002**: Planning MUST define testable behavior for every create, list, delete, validation, authentication, and ownership requirement so tests can be written and observed failing before implementation.
-- **AQ-003**: Planning MUST identify validation, authorization, persistence, and public API documentation obligations introduced by agent management.
+- **AQ-003**: Planning MUST identify validation, authentication, persistence, and public API documentation obligations introduced by agent management.
 - **AQ-004**: Verification MUST include applicable lint checks, passing tests, and at least 80% coverage for new or modified agent management behavior.
 
 ### Key Entities *(include if feature involves data)*

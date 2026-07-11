@@ -104,7 +104,7 @@
   by this feature, including the abstractions between them.
 - **AQ-002**: Define testable behavior for every feature or bug-fix requirement so tests can
   be written and observed failing before implementation.
-- **AQ-003**: Identify validation, authorization, persistence, or public API documentation
+- **AQ-003**: Identify validation, authentication, persistence, or public API documentation
   obligations introduced or changed by this feature.
 - **AQ-004**: Define measurable quality verification, including lint, passing tests, and at
   least 80% coverage for new or modified behavior.
