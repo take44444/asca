@@ -66,7 +66,7 @@ the expected reason before implementation begins.
 Examples of foundational tasks (adjust based on your project):
 
 - [ ] T004 Setup database schema and migrations framework
-- [ ] T005 [P] Implement authentication/authorization framework
+- [ ] T005 [P] Implement authentication framework
 - [ ] T006 [P] Setup API routing and middleware structure
 - [ ] T007 Create base models/entities that all stories depend on
 - [ ] T008 Configure error handling and logging infrastructure
@@ -97,7 +97,7 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] T015 [US1] Implement service in src/[module]/service/[service]/[service].service.ts
 - [ ] T016 [US1] Implement repository in src/[module]/repository/[repository]/
 - [ ] T017 [US1] Implement DTO and controller in src/[module]/controller/
-- [ ] T018 [US1] Add validation, authorization, error handling, and public API doc comments
+- [ ] T018 [US1] Add validation, authentication, error handling, and public API doc comments
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 

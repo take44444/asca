@@ -37,7 +37,7 @@ The frontend of A.S.C.A. is developed in another repository. The frontend provid
 - Prisma for repository and database access
 - PostgreSQL for production database
 - SQLite for development and testing database
-- Auth.js for authorization
+- @nestjs/jwt for authentication
 - @nestjs/testing for testing
 
 ## Project and Code Guidelines

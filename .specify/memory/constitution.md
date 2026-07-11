@@ -1,21 +1,16 @@
 <!--
 Sync Impact Report
-- Version change: template (unratified) → 1.0.0
+- Version change: 1.0.0 → 2.0.0
 - Modified principles:
-  - Template Principle 1 → I. Clean Architecture
-  - Template Principle 2 → II. Test-Driven Development (NON-NEGOTIABLE)
-  - Template Principle 3 → III. Quality Gates
-  - Template Principles 4 and 5 removed as unused placeholders
-- Added sections:
-  - Technical Constraints
-  - Development Workflow and Project Structure
-- Removed sections: none (template placeholders were replaced)
+  - Technical Constraints: Auth.js authorization → @nestjs/jwt authentication
+- Added sections: none
+- Removed sections: none
 - Templates requiring updates:
   - ✅ updated: .specify/templates/plan-template.md
   - ✅ updated: .specify/templates/spec-template.md
   - ✅ updated: .specify/templates/tasks-template.md
   - ✅ reviewed: .specify/templates/commands/*.md (directory not present)
-  - ✅ updated: README.md
+  - ✅ reviewed: README.md
 - Follow-up TODOs: none
 -->
 # A.S.C.A. Backend Constitution
@@ -58,7 +53,7 @@ These gates establish a consistent, measurable baseline for correctness and main
 The backend MUST use TypeScript and NestJS. Input validation MUST use `class-validator`.
 Repository and database access MUST use Prisma. Production persistence MUST use PostgreSQL;
 development and automated tests MUST use SQLite unless a test specifically verifies
-PostgreSQL behavior. Authorization MUST use Auth.js, and NestJS tests MUST use
+PostgreSQL behavior. Authentication MUST use `@nestjs/jwt`, and NestJS tests MUST use
 `@nestjs/testing` where framework integration is involved.
 
 Code MUST follow the Google TypeScript Style Guide. Classes, interfaces, constants,
@@ -99,4 +94,4 @@ design. Every pull request review MUST verify applicable constitutional rules an
 approved exception. Maintainers MUST review constitution compliance when amending this
 document and when recurring exceptions indicate that a rule or implementation needs change.
 
-**Version**: 1.0.0 | **Ratified**: 2026-07-06 | **Last Amended**: 2026-07-06
+**Version**: 2.0.0 | **Ratified**: 2026-07-06 | **Last Amended**: 2026-07-12
