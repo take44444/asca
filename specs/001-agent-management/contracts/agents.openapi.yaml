@@ -1,0 +1,149 @@
+openapi: 3.1.0
+info:
+  title: Agent Management API
+  version: 0.1.0
+  description: Contract for authenticated user-owned agent creation, listing, and deletion.
+servers:
+  - url: http://localhost:3000
+security:
+  - bearerJwt: []
+paths:
+  /agents:
+    post:
+      summary: Create an agent for the authenticated user
+      operationId: createAgent
+      security:
+        - bearerJwt: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAgentRequest'
+      responses:
+        '201':
+          description: Agent created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedAgent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    get:
+      summary: List agents owned by the authenticated user
+      operationId: listAgents
+      security:
+        - bearerJwt: []
+      responses:
+        '200':
+          description: Agents owned by the authenticated user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AgentSummary'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /agents/{id}:
+    delete:
+      summary: Delete one agent owned by the authenticated user
+      operationId: deleteAgent
+      security:
+        - bearerJwt: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the agent to delete.
+      responses:
+        '204':
+          description: Agent deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  securitySchemes:
+    bearerJwt:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    CreateAgentRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: Agent name. Whitespace-only values are invalid.
+    CreatedAgent:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - name
+        - author
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        author:
+          type: string
+          format: email
+    AgentSummary:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    ErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - statusCode
+        - message
+        - error
+      properties:
+        statusCode:
+          type: integer
+        message:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        error:
+          type: string
+  responses:
+    BadRequest:
+      description: Request payload is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Authentication token is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: No deletable agent was found for the authenticated user.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
