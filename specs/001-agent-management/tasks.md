@@ -12,11 +12,11 @@
 
 **Purpose**: Add dependencies, Prisma scaffolding, and feature directories required by every story.
 
-- [ ] T001 Install validation, `@nestjs/jwt`, and Prisma dependencies in package.json and package-lock.json
-- [ ] T002 Create Prisma schema with SQLite datasource and Agent model in prisma/schema.prisma
-- [ ] T003 [P] Create Prisma module and service skeleton in src/prisma/prisma.module.ts and src/prisma/prisma.service.ts
-- [ ] T004 [P] Create auth module directory structure in src/auth/auth.module.ts and src/auth/service/verify-auth-token/verify-auth-token.service.interface.ts
-- [ ] T005 [P] Create agents module directory structure in src/agents/agents.module.ts, src/agents/controller/, src/agents/service/manage-agents/, and src/agents/repository/agent-store/
+- [X] T001 Install validation, `@nestjs/jwt`, and Prisma dependencies in package.json and package-lock.json
+- [X] T002 Create Prisma schema with SQLite datasource and Agent model in prisma/schema.prisma
+- [X] T003 [P] Create Prisma module and service skeleton in src/prisma/prisma.module.ts and src/prisma/prisma.service.ts
+- [X] T004 [P] Create auth module directory structure in src/auth/auth.module.ts and src/auth/service/verify-auth-token/verify-auth-token.service.interface.ts
+- [X] T005 [P] Create agents module directory structure in src/agents/agents.module.ts, src/agents/controller/, src/agents/service/manage-agents/, and src/agents/repository/agent-store/
 
 ---
 
@@ -26,12 +26,12 @@
 
 **CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T006 Define AuthenticatedUser domain model in src/auth/service/verify-auth-token/authenticated-user.model.ts
-- [ ] T007 [P] Define Agent domain model in src/agents/service/manage-agents/agent.model.ts
-- [ ] T008 [P] Define Agent DAO type in src/agents/repository/agent-store/agent.dao.ts
-- [ ] T009 Define AgentStoreRepository interface with create, listByAuthor, and deleteByIdAndAuthor contracts in src/agents/repository/agent-store/agent-store.repository.interface.ts
-- [ ] T010 Define ManageAgentsService interface with create, list, and delete contracts in src/agents/service/manage-agents/manage-agents.service.interface.ts
-- [ ] T011 Wire PrismaModule, AuthModule, and AgentsModule imports in src/app.module.ts and src/agents/agents.module.ts
+- [X] T006 Define AuthenticatedUser domain model in src/auth/service/verify-auth-token/authenticated-user.model.ts
+- [X] T007 [P] Define Agent domain model in src/agents/service/manage-agents/agent.model.ts
+- [X] T008 [P] Define Agent DAO type in src/agents/repository/agent-store/agent.dao.ts
+- [X] T009 Define AgentStoreRepository interface with create, listByAuthor, and deleteByIdAndAuthor contracts in src/agents/repository/agent-store/agent-store.repository.interface.ts
+- [X] T010 Define ManageAgentsService interface with create, list, and delete contracts in src/agents/service/manage-agents/manage-agents.service.interface.ts
+- [X] T011 Wire PrismaModule, AuthModule, and AgentsModule imports in src/app.module.ts and src/agents/agents.module.ts
 
 **Checkpoint**: Foundation ready; user-story tests and implementation can proceed.
 
@@ -45,18 +45,18 @@
 
 ### Tests for User Story 4 (REQUIRED)
 
-- [ ] T012 [P] [US4] Write verify-token service tests for missing, malformed, invalid, and valid JWT outcomes in src/auth/service/verify-auth-token/verify-auth-token.service.spec.ts
-- [ ] T013 [P] [US4] Write controller authorization tests proving POST /agents, GET /agents, and DELETE /agents/:id reject unauthenticated requests before service calls in src/agents/controller/agents.controller.spec.ts
-- [ ] T014 [P] [US4] Write e2e tests for unauthenticated and invalid-token POST /agents, GET /agents, and DELETE /agents/test-id requests, including assertions that seeded agent data remains unchanged after rejected requests, in test/agents.e2e-spec.ts
-- [ ] T015 [US4] Run US4 tests with npm test and npm run test:e2e and verify they fail for missing authentication behavior in src/auth/service/verify-auth-token/verify-auth-token.service.spec.ts, src/agents/controller/agents.controller.spec.ts, and test/agents.e2e-spec.ts
+- [X] T012 [P] [US4] Write verify-token service tests for missing, malformed, invalid, and valid JWT outcomes in src/auth/service/verify-auth-token/verify-auth-token.service.spec.ts
+- [X] T013 [P] [US4] Write controller authorization tests proving POST /agents, GET /agents, and DELETE /agents/:id reject unauthenticated requests before service calls in src/agents/controller/agents.controller.spec.ts
+- [X] T014 [P] [US4] Write e2e tests for unauthenticated and invalid-token POST /agents, GET /agents, and DELETE /agents/test-id requests, including assertions that seeded agent data remains unchanged after rejected requests, in test/agents.e2e-spec.ts
+- [X] T015 [US4] Run US4 tests with npm test and npm run test:e2e and verify they fail for missing authentication behavior in src/auth/service/verify-auth-token/verify-auth-token.service.spec.ts, src/agents/controller/agents.controller.spec.ts, and test/agents.e2e-spec.ts
 
 ### Implementation for User Story 4
 
-- [ ] T016 [US4] Implement `@nestjs/jwt` bearer verification using AUTH_SECRET in src/auth/service/verify-auth-token/verify-auth-token.service.ts
-- [ ] T017 [US4] Implement authenticated-user decorator or guard helper that exposes AuthenticatedUser to controllers in src/auth/controller/authenticated-user.decorator.ts
-- [ ] T018 [US4] Implement guarded AgentsController route skeletons for POST /agents, GET /agents, and DELETE /agents/:id in src/agents/controller/agents.controller.ts
-- [ ] T019 [US4] Register auth and agent providers in src/auth/auth.module.ts and src/agents/agents.module.ts
-- [ ] T020 [US4] Run US4 tests with npm test and npm run test:e2e and confirm authentication rejection passes in src/auth/service/verify-auth-token/verify-auth-token.service.spec.ts, src/agents/controller/agents.controller.spec.ts, and test/agents.e2e-spec.ts
+- [X] T016 [US4] Implement `@nestjs/jwt` bearer verification using AUTH_SECRET in src/auth/service/verify-auth-token/verify-auth-token.service.ts
+- [X] T017 [US4] Implement authenticated-user decorator or guard helper that exposes AuthenticatedUser to controllers in src/auth/controller/authenticated-user.decorator.ts
+- [X] T018 [US4] Implement guarded AgentsController route skeletons for POST /agents, GET /agents, and DELETE /agents/:id in src/agents/controller/agents.controller.ts
+- [X] T019 [US4] Register auth and agent providers in src/auth/auth.module.ts and src/agents/agents.module.ts
+- [X] T020 [US4] Run US4 tests with npm test and npm run test:e2e and confirm authentication rejection passes in src/auth/service/verify-auth-token/verify-auth-token.service.spec.ts, src/agents/controller/agents.controller.spec.ts, and test/agents.e2e-spec.ts
 
 **Checkpoint**: Agent management routes reject unauthenticated requests without reading or changing agent data.
 
@@ -70,19 +70,19 @@
 
 ### Tests for User Story 1 (REQUIRED)
 
-- [ ] T021 [P] [US1] Write controller tests for valid create and invalid name payloads in src/agents/controller/agents.controller.spec.ts
-- [ ] T022 [P] [US1] Write service tests for creating an agent with authenticated email and rejecting blank names in src/agents/service/manage-agents/manage-agents.service.spec.ts
-- [ ] T023 [P] [US1] Write repository tests for persisting id, name, and author email in src/agents/repository/agent-store/prisma-agent-store.repository.spec.ts
-- [ ] T024 [P] [US1] Write e2e tests for authenticated create and invalid create payloads in test/agents.e2e-spec.ts
-- [ ] T025 [US1] Run US1 tests with npm test and npm run test:e2e and verify they fail for missing create behavior in src/agents/ and test/agents.e2e-spec.ts
+- [X] T021 [P] [US1] Write controller tests for valid create and invalid name payloads in src/agents/controller/agents.controller.spec.ts
+- [X] T022 [P] [US1] Write service tests for creating an agent with authenticated email and rejecting blank names in src/agents/service/manage-agents/manage-agents.service.spec.ts
+- [X] T023 [P] [US1] Write repository tests for persisting id, name, and author email in src/agents/repository/agent-store/prisma-agent-store.repository.spec.ts
+- [X] T024 [P] [US1] Write e2e tests for authenticated create and invalid create payloads in test/agents.e2e-spec.ts
+- [X] T025 [US1] Run US1 tests with npm test and npm run test:e2e and verify they fail for missing create behavior in src/agents/ and test/agents.e2e-spec.ts
 
 ### Implementation for User Story 1
 
-- [ ] T026 [US1] Add create DTO with class-validator validation that rejects missing, empty, or whitespace-only names after trimming in src/agents/controller/agent.dto.ts
-- [ ] T027 [US1] Implement create business behavior and domain mapping in src/agents/service/manage-agents/manage-agents.service.ts
-- [ ] T028 [US1] Implement Prisma create persistence and DAO mapping in src/agents/repository/agent-store/prisma-agent-store.repository.ts
-- [ ] T029 [US1] Implement POST /agents response mapping and validation pipe behavior in src/agents/controller/agents.controller.ts and src/main.ts
-- [ ] T030 [US1] Run US1 tests with npm test and npm run test:e2e and confirm create behavior passes in src/agents/ and test/agents.e2e-spec.ts
+- [X] T026 [US1] Add create DTO with class-validator validation that rejects missing, empty, or whitespace-only names after trimming in src/agents/controller/agent.dto.ts
+- [X] T027 [US1] Implement create business behavior and domain mapping in src/agents/service/manage-agents/manage-agents.service.ts
+- [X] T028 [US1] Implement Prisma create persistence and DAO mapping in src/agents/repository/agent-store/prisma-agent-store.repository.ts
+- [X] T029 [US1] Implement POST /agents response mapping and validation pipe behavior in src/agents/controller/agents.controller.ts and src/main.ts
+- [X] T030 [US1] Run US1 tests with npm test and npm run test:e2e and confirm create behavior passes in src/agents/ and test/agents.e2e-spec.ts
 
 **Checkpoint**: MVP create flow works independently for authenticated users.
 
@@ -96,18 +96,18 @@
 
 ### Tests for User Story 2 (REQUIRED)
 
-- [ ] T031 [P] [US2] Write controller tests for owned-only list response and empty list response in src/agents/controller/agents.controller.spec.ts
-- [ ] T032 [P] [US2] Write service tests for author-scoped listing and response summary mapping in src/agents/service/manage-agents/manage-agents.service.spec.ts
-- [ ] T033 [P] [US2] Write repository tests for listByAuthor excluding other users' agents in src/agents/repository/agent-store/prisma-agent-store.repository.spec.ts
-- [ ] T034 [P] [US2] Write e2e tests for multi-user owned-only listing and empty listing in test/agents.e2e-spec.ts
-- [ ] T035 [US2] Run US2 tests with npm test and npm run test:e2e and verify they fail for missing list behavior in src/agents/ and test/agents.e2e-spec.ts
+- [X] T031 [P] [US2] Write controller tests for owned-only list response and empty list response in src/agents/controller/agents.controller.spec.ts
+- [X] T032 [P] [US2] Write service tests for author-scoped listing and response summary mapping in src/agents/service/manage-agents/manage-agents.service.spec.ts
+- [X] T033 [P] [US2] Write repository tests for listByAuthor excluding other users' agents in src/agents/repository/agent-store/prisma-agent-store.repository.spec.ts
+- [X] T034 [P] [US2] Write e2e tests for multi-user owned-only listing and empty listing in test/agents.e2e-spec.ts
+- [X] T035 [US2] Run US2 tests with npm test and npm run test:e2e and verify they fail for missing list behavior in src/agents/ and test/agents.e2e-spec.ts
 
 ### Implementation for User Story 2
 
-- [ ] T036 [US2] Implement list business behavior and summary mapping in src/agents/service/manage-agents/manage-agents.service.ts
-- [ ] T037 [US2] Implement Prisma author-scoped list query in src/agents/repository/agent-store/prisma-agent-store.repository.ts
-- [ ] T038 [US2] Implement GET /agents response mapping in src/agents/controller/agents.controller.ts
-- [ ] T039 [US2] Run US2 tests with npm test and npm run test:e2e and confirm list behavior passes in src/agents/ and test/agents.e2e-spec.ts
+- [X] T036 [US2] Implement list business behavior and summary mapping in src/agents/service/manage-agents/manage-agents.service.ts
+- [X] T037 [US2] Implement Prisma author-scoped list query in src/agents/repository/agent-store/prisma-agent-store.repository.ts
+- [X] T038 [US2] Implement GET /agents response mapping in src/agents/controller/agents.controller.ts
+- [X] T039 [US2] Run US2 tests with npm test and npm run test:e2e and confirm list behavior passes in src/agents/ and test/agents.e2e-spec.ts
 
 **Checkpoint**: Create and list work independently while preserving author scoping.
 
@@ -121,18 +121,18 @@
 
 ### Tests for User Story 3 (REQUIRED)
 
-- [ ] T040 [P] [US3] Write controller tests for 204 owned delete and 404 missing or non-owned delete in src/agents/controller/agents.controller.spec.ts
-- [ ] T041 [P] [US3] Write service tests for owner-scoped delete success and not-found outcomes in src/agents/service/manage-agents/manage-agents.service.spec.ts
-- [ ] T042 [P] [US3] Write repository tests for deleteByIdAndAuthor deleting only matching id and author in src/agents/repository/agent-store/prisma-agent-store.repository.spec.ts
-- [ ] T043 [P] [US3] Write e2e tests for delete success, subsequent list absence, missing-agent 404, and non-owned-agent 404 in test/agents.e2e-spec.ts
-- [ ] T044 [US3] Run US3 tests with npm test and npm run test:e2e and verify they fail for missing delete behavior in src/agents/ and test/agents.e2e-spec.ts
+- [X] T040 [P] [US3] Write controller tests for 204 owned delete and 404 missing or non-owned delete in src/agents/controller/agents.controller.spec.ts
+- [X] T041 [P] [US3] Write service tests for owner-scoped delete success and not-found outcomes in src/agents/service/manage-agents/manage-agents.service.spec.ts
+- [X] T042 [P] [US3] Write repository tests for deleteByIdAndAuthor deleting only matching id and author in src/agents/repository/agent-store/prisma-agent-store.repository.spec.ts
+- [X] T043 [P] [US3] Write e2e tests for delete success, subsequent list absence, missing-agent 404, and non-owned-agent 404 in test/agents.e2e-spec.ts
+- [X] T044 [US3] Run US3 tests with npm test and npm run test:e2e and verify they fail for missing delete behavior in src/agents/ and test/agents.e2e-spec.ts
 
 ### Implementation for User Story 3
 
-- [ ] T045 [US3] Implement owner-scoped delete business behavior and not-found handling in src/agents/service/manage-agents/manage-agents.service.ts
-- [ ] T046 [US3] Implement Prisma deleteByIdAndAuthor query and not-found result mapping in src/agents/repository/agent-store/prisma-agent-store.repository.ts
-- [ ] T047 [US3] Implement DELETE /agents/:id 204 and 404 response behavior in src/agents/controller/agents.controller.ts
-- [ ] T048 [US3] Run US3 tests with npm test and npm run test:e2e and confirm delete behavior passes in src/agents/ and test/agents.e2e-spec.ts
+- [X] T045 [US3] Implement owner-scoped delete business behavior and not-found handling in src/agents/service/manage-agents/manage-agents.service.ts
+- [X] T046 [US3] Implement Prisma deleteByIdAndAuthor query and not-found result mapping in src/agents/repository/agent-store/prisma-agent-store.repository.ts
+- [X] T047 [US3] Implement DELETE /agents/:id 204 and 404 response behavior in src/agents/controller/agents.controller.ts
+- [X] T048 [US3] Run US3 tests with npm test and npm run test:e2e and confirm delete behavior passes in src/agents/ and test/agents.e2e-spec.ts
 
 **Checkpoint**: Create, list, delete, ownership scoping, and non-disclosing not-found behavior all work.
 
@@ -142,13 +142,13 @@
 
 **Purpose**: Final integration, documentation, and quality gates across all stories.
 
-- [ ] T049 [P] Add Prisma generation and migration instructions for the Agent model in specs/001-agent-management/quickstart.md
-- [ ] T050 [P] Verify OpenAPI contract still matches implemented /agents responses in specs/001-agent-management/contracts/agents.openapi.yaml
-- [ ] T051 Run npm run lint and fix any explicit typing, doc comment, no-any, or style violations in src/auth/, src/prisma/, src/agents/, and test/agents.e2e-spec.ts
-- [ ] T052 Run npm test and fix any unit test failures in src/auth/, src/prisma/, and src/agents/
-- [ ] T053 Run npm run test:e2e and fix any e2e failures in test/agents.e2e-spec.ts
-- [ ] T054 Run npm run test:cov and verify at least 80% coverage for new or modified auth, prisma, and agent management behavior in coverage/
-- [ ] T055 Execute quickstart validation scenarios against a local app using AUTH_SECRET=test-secret in specs/001-agent-management/quickstart.md
+- [X] T049 [P] Add Prisma generation and migration instructions for the Agent model in specs/001-agent-management/quickstart.md
+- [X] T050 [P] Verify OpenAPI contract still matches implemented /agents responses in specs/001-agent-management/contracts/agents.openapi.yaml
+- [X] T051 Run npm run lint and fix any explicit typing, doc comment, no-any, or style violations in src/auth/, src/prisma/, src/agents/, and test/agents.e2e-spec.ts
+- [X] T052 Run npm test and fix any unit test failures in src/auth/, src/prisma/, and src/agents/
+- [X] T053 Run npm run test:e2e and fix any e2e failures in test/agents.e2e-spec.ts
+- [X] T054 Run npm run test:cov and verify at least 80% coverage for new or modified auth, prisma, and agent management behavior in coverage/
+- [X] T055 Execute quickstart validation scenarios against a local app using AUTH_SECRET=test-secret in specs/001-agent-management/quickstart.md
 
 ---
 

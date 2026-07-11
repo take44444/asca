@@ -12,20 +12,26 @@
 1. Install the feature dependencies when tasks call for implementation:
 
    ```bash
-   npm install class-validator class-transformer @auth/core @prisma/client prisma
+   npm install class-validator class-transformer @nestjs/jwt @prisma/client@6 prisma@6
    ```
 
-2. Prepare the Prisma SQLite test/development database after the schema is added:
+2. Configure the SQLite database URL for local validation:
+
+   ```bash
+   export DATABASE_URL="file:./dev.db"
+   ```
+
+3. Prepare the Prisma SQLite test/development database after the schema is added:
 
    ```bash
    npx prisma generate
-   npx prisma migrate dev
+   npx prisma db push
    ```
 
-3. Run the application:
+4. Run the application:
 
    ```bash
-   AUTH_SECRET=test-secret npm run start:dev
+   AUTH_SECRET=test-secret DATABASE_URL="file:./dev.db" npm run start:dev
    ```
 
 ## Contract Validation Scenarios
