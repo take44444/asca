@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -29,6 +30,8 @@ describe('AgentsController', () => {
       create: jest.fn(),
       list: jest.fn(),
       delete: jest.fn(),
+      get: jest.fn(),
+      update: jest.fn(),
     };
     controller = new AgentsController(manageAgentsService, authService);
   });
@@ -36,6 +39,14 @@ describe('AgentsController', () => {
   it.each([
     ['create', () => controller.create(undefined, { name: 'Support Agent' })],
     ['list', () => controller.list(undefined)],
+    ['get', () => controller.get(undefined, 'agent-1')],
+    [
+      'update',
+      () =>
+        controller.update(undefined, 'agent-1', {
+          name: 'Support Agent',
+        }),
+    ],
     ['delete', () => controller.delete(undefined, 'agent-1')],
   ])(
     'rejects unauthenticated %s before service calls',
@@ -47,6 +58,8 @@ describe('AgentsController', () => {
       await expect(act()).rejects.toBeInstanceOf(UnauthorizedException);
       expect(manageAgentsService.create.mock.calls).toHaveLength(0);
       expect(manageAgentsService.list.mock.calls).toHaveLength(0);
+      expect(manageAgentsService.get.mock.calls).toHaveLength(0);
+      expect(manageAgentsService.update.mock.calls).toHaveLength(0);
       expect(manageAgentsService.delete.mock.calls).toHaveLength(0);
     },
   );
@@ -56,7 +69,6 @@ describe('AgentsController', () => {
     manageAgentsService.create.mockResolvedValue({
       id: 'agent-1',
       name: 'Support Agent',
-      author: user.email,
     });
 
     await expect(
@@ -64,7 +76,6 @@ describe('AgentsController', () => {
     ).resolves.toEqual({
       id: 'agent-1',
       name: 'Support Agent',
-      author: user.email,
     });
     expect(manageAgentsService.create.mock.calls).toEqual([
       ['Support Agent', user],
@@ -101,6 +112,128 @@ describe('AgentsController', () => {
     manageAgentsService.list.mockResolvedValue([]);
 
     await expect(controller.list('Bearer token')).resolves.toEqual([]);
+  });
+
+  it('omits role from owned agent summaries', async () => {
+    authService.verifyAuthorizationHeader.mockResolvedValue(user);
+    manageAgentsService.list.mockResolvedValue([
+      { id: 'agent-1', name: 'Support Agent' },
+    ]);
+
+    await expect(controller.list('Bearer token')).resolves.toEqual([
+      { id: 'agent-1', name: 'Support Agent' },
+    ]);
+  });
+
+  it('gets an owned agent detail', async () => {
+    authService.verifyAuthorizationHeader.mockResolvedValue(user);
+    manageAgentsService.get.mockResolvedValue({
+      id: 'agent-1',
+      name: 'Support Agent',
+      author: user.email,
+      role: 'Answer support questions.',
+    });
+
+    await expect(controller.get('Bearer token', 'agent-1')).resolves.toEqual({
+      id: 'agent-1',
+      name: 'Support Agent',
+      author: user.email,
+      role: 'Answer support questions.',
+    });
+    expect(manageAgentsService.get.mock.calls).toEqual([['agent-1', user]]);
+  });
+
+  it('returns not found for unknown get', async () => {
+    authService.verifyAuthorizationHeader.mockResolvedValue(user);
+    manageAgentsService.get.mockRejectedValue(new NotFoundException());
+
+    await expect(
+      controller.get('Bearer token', 'missing-agent'),
+    ).rejects.toBeInstanceOf(NotFoundException);
+  });
+
+  it('returns forbidden for cross-owner get', async () => {
+    authService.verifyAuthorizationHeader.mockResolvedValue(user);
+    manageAgentsService.get.mockRejectedValue(new ForbiddenException());
+
+    await expect(
+      controller.get('Bearer token', 'other-agent'),
+    ).rejects.toBeInstanceOf(ForbiddenException);
+  });
+
+  it.each([
+    [
+      'name and role',
+      { name: 'Updated Agent', role: 'Answer billing questions.' },
+      { name: 'Updated Agent', role: 'Answer billing questions.' },
+    ],
+    ['name only', { name: 'Updated Agent' }, { name: 'Updated Agent' }],
+    [
+      'role only',
+      { role: 'Answer billing questions.' },
+      { role: 'Answer billing questions.' },
+    ],
+  ])(
+    'updates an owned agent with %s',
+    async (
+      _caseName: string,
+      body: { readonly name?: string; readonly role?: string },
+      expectedUpdate: { readonly name?: string; readonly role?: string },
+    ) => {
+      authService.verifyAuthorizationHeader.mockResolvedValue(user);
+      manageAgentsService.update.mockResolvedValue({
+        id: 'agent-1',
+        name: body.name ?? 'Support Agent',
+        author: user.email,
+        role: body.role ?? 'Answer support questions.',
+      });
+
+      await expect(
+        controller.update('Bearer token', 'agent-1', body),
+      ).resolves.toEqual({
+        id: 'agent-1',
+        name: body.name ?? 'Support Agent',
+        author: user.email,
+        role: body.role ?? 'Answer support questions.',
+      });
+      expect(manageAgentsService.update.mock.calls).toEqual([
+        ['agent-1', expectedUpdate, user],
+      ]);
+    },
+  );
+
+  it.each([{}, { name: '' }, { name: '   ' }, { role: 12 }])(
+    'rejects invalid update payload %p',
+    async (body: object) => {
+      authService.verifyAuthorizationHeader.mockResolvedValue(user);
+
+      await expect(
+        controller.update('Bearer token', 'agent-1', body),
+      ).rejects.toBeInstanceOf(BadRequestException);
+      expect(manageAgentsService.update.mock.calls).toHaveLength(0);
+    },
+  );
+
+  it('returns not found for unknown update', async () => {
+    authService.verifyAuthorizationHeader.mockResolvedValue(user);
+    manageAgentsService.update.mockRejectedValue(new NotFoundException());
+
+    await expect(
+      controller.update('Bearer token', 'missing-agent', {
+        name: 'Updated Agent',
+      }),
+    ).rejects.toBeInstanceOf(NotFoundException);
+  });
+
+  it('returns forbidden for cross-owner update', async () => {
+    authService.verifyAuthorizationHeader.mockResolvedValue(user);
+    manageAgentsService.update.mockRejectedValue(new ForbiddenException());
+
+    await expect(
+      controller.update('Bearer token', 'other-agent', {
+        role: 'Answer billing questions.',
+      }),
+    ).rejects.toBeInstanceOf(ForbiddenException);
   });
 
   it('deletes an owned agent', async () => {

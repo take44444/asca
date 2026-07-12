@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
@@ -9,8 +10,11 @@ import {
   AGENT_STORE_REPOSITORY,
   AgentStoreRepository,
 } from '../../repository/agent-store/agent-store.repository.interface';
-import { AgentDao } from '../../repository/agent-store/agent.dao';
-import { Agent, AgentSummary } from './agent.model';
+import {
+  AgentDetailDao,
+  AgentSummaryDao,
+} from '../../repository/agent-store/agent.dao';
+import { Agent, AgentSummary, UpdateAgent } from './agent.model';
 import { ManageAgentsService } from './manage-agents.service.interface';
 
 /** Domain service for creating, listing, and deleting user-owned agents. */
@@ -23,27 +27,52 @@ export class ManageAgentsDomainService implements ManageAgentsService {
   ) {}
 
   /** Creates an agent owned by the authenticated user. */
-  async create(name: string, user: AuthenticatedUser): Promise<Agent> {
+  async create(name: string, user: AuthenticatedUser): Promise<AgentSummary> {
     const trimmedName: string = name.trim();
     if (trimmedName === '') {
       throw new BadRequestException();
     }
 
-    const agent: AgentDao = await this.agentStoreRepository.create(
-      trimmedName,
-      user.email,
-    );
-    return this.toAgent(agent);
+    return this.agentStoreRepository.create(trimmedName, user.email);
   }
 
   /** Lists agents owned by the authenticated user. */
   async list(user: AuthenticatedUser): Promise<readonly AgentSummary[]> {
-    const agents: readonly AgentDao[] =
+    const agents: readonly AgentSummaryDao[] =
       await this.agentStoreRepository.listByAuthor(user.email);
-    return agents.map((agent: AgentDao): AgentSummary => ({
+    return agents.map((agent: AgentSummaryDao): AgentSummary => ({
       id: agent.id,
       name: agent.name,
     }));
+  }
+
+  /** Gets one agent owned by the authenticated user. */
+  async get(id: string, user: AuthenticatedUser): Promise<Agent> {
+    const agent: AgentDetailDao = await this.findExistingAgent(id);
+    this.assertOwner(agent, user);
+    return this.toAgent(agent);
+  }
+
+  /** Updates one agent owned by the authenticated user. */
+  async update(
+    id: string,
+    update: UpdateAgent,
+    user: AuthenticatedUser,
+  ): Promise<Agent> {
+    const agent: AgentDetailDao = await this.findExistingAgent(id);
+    this.assertOwner(agent, user);
+
+    const updatedAgent: AgentDetailDao | null =
+      await this.agentStoreRepository.updateByIdAndAuthor(
+        id,
+        user.email,
+        update,
+      );
+    if (updatedAgent === null) {
+      throw new ForbiddenException();
+    }
+
+    return this.toAgent(updatedAgent);
   }
 
   /** Deletes an agent owned by the authenticated user. */
@@ -55,11 +84,28 @@ export class ManageAgentsDomainService implements ManageAgentsService {
     }
   }
 
-  private toAgent(agent: AgentDao): Agent {
+  private toAgent(agent: AgentDetailDao): Agent {
     return {
       id: agent.id,
       name: agent.name,
       author: agent.author,
+      role: agent.role ?? '',
     };
+  }
+
+  private async findExistingAgent(id: string): Promise<AgentDetailDao> {
+    const agent: AgentDetailDao | null =
+      await this.agentStoreRepository.findById(id);
+    if (agent === null) {
+      throw new NotFoundException();
+    }
+
+    return agent;
+  }
+
+  private assertOwner(agent: AgentDetailDao, user: AuthenticatedUser): void {
+    if (agent.author !== user.email) {
+      throw new ForbiddenException();
+    }
   }
 }

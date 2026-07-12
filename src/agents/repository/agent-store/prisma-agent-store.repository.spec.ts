@@ -25,23 +25,114 @@ describe('PrismaAgentStoreRepository', () => {
     await prismaService.$disconnect();
   });
 
-  it('persists id, name, and author email', async () => {
+  it('returns only id and name after create', async () => {
     const agent = await repository.create('Support Agent', 'user@example.com');
 
-    expect(agent.id).toEqual(expect.any(String));
+    expect(typeof agent.id).toBe('string');
     expect(agent.name).toBe('Support Agent');
-    expect(agent.author).toBe('user@example.com');
+    expect(agent).not.toHaveProperty('author');
+    expect(agent).not.toHaveProperty('role');
   });
 
   it('lists only agents for the requested author', async () => {
     await repository.create('User Agent', 'user@example.com');
     await repository.create('Other Agent', 'other@example.com');
 
+    const agents = await repository.listByAuthor('user@example.com');
+
+    expect(agents).toHaveLength(1);
+    expect(typeof agents[0]?.id).toBe('string');
+    expect(agents[0]?.name).toBe('User Agent');
+  });
+
+  it('finds an agent by id with role data', async () => {
+    const agent = await prismaService.agent.create({
+      data: {
+        name: 'Support Agent',
+        author: 'user@example.com',
+        role: 'Answer support questions.',
+      },
+    });
+
+    await expect(repository.findById(agent.id)).resolves.toMatchObject({
+      id: agent.id,
+      name: 'Support Agent',
+      author: 'user@example.com',
+      role: 'Answer support questions.',
+    });
+  });
+
+  it('returns null when find by id misses', async () => {
+    await expect(repository.findById('missing-agent')).resolves.toBeNull();
+  });
+
+  it('updates an agent only when id and author both match', async () => {
+    const ownedAgent = await prismaService.agent.create({
+      data: {
+        name: 'Owned Agent',
+        author: 'user@example.com',
+        role: 'Original role.',
+      },
+    });
+    const otherAgent = await prismaService.agent.create({
+      data: {
+        name: 'Other Agent',
+        author: 'other@example.com',
+        role: 'Other role.',
+      },
+    });
+
     await expect(
-      repository.listByAuthor('user@example.com'),
-    ).resolves.toMatchObject([
-      { name: 'User Agent', author: 'user@example.com' },
-    ]);
+      repository.updateByIdAndAuthor(otherAgent.id, 'user@example.com', {
+        name: 'Updated Other Agent',
+        role: 'Updated role.',
+      }),
+    ).resolves.toBeNull();
+    await expect(
+      repository.updateByIdAndAuthor(ownedAgent.id, 'user@example.com', {
+        role: 'Updated role.',
+      }),
+    ).resolves.toMatchObject({
+      id: ownedAgent.id,
+      name: 'Owned Agent',
+      author: 'user@example.com',
+      role: 'Updated role.',
+    });
+    await expect(repository.findById(otherAgent.id)).resolves.toMatchObject({
+      name: 'Other Agent',
+      role: 'Other role.',
+    });
+  });
+
+  it('keeps list ordering and summary-compatible fields after role persistence', async () => {
+    const secondAgent = await repository.create(
+      'Second Agent',
+      'user@example.com',
+    );
+    const firstAgent = await repository.create(
+      'First Agent',
+      'user@example.com',
+    );
+    await repository.updateByIdAndAuthor(firstAgent.id, 'user@example.com', {
+      role: 'First role.',
+    });
+    const expectedAgents = [
+      {
+        id: firstAgent.id,
+        name: 'First Agent',
+      },
+      {
+        id: secondAgent.id,
+        name: 'Second Agent',
+      },
+    ].sort(
+      (left: { readonly id: string }, right: { readonly id: string }): number =>
+        left.id.localeCompare(right.id),
+    );
+
+    await expect(repository.listByAuthor('user@example.com')).resolves.toEqual(
+      expectedAgents,
+    );
   });
 
   it('deletes only when id and author both match', async () => {

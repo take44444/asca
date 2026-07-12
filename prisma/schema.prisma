@@ -10,6 +10,7 @@ model Agent {
   id     String @id @default(cuid())
   name   String
   author String
+  role   String?
 
   @@index([author])
 }
