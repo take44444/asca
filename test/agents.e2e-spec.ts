@@ -25,7 +25,7 @@ describe('AgentsController (e2e)', () => {
   beforeAll(async () => {
     process.env.AUTH_SECRET = 'test-secret';
     process.env.DATABASE_URL = 'file:./e2e-agents.db';
-    execFileSync('npx', ['prisma', 'db', 'push', '--skip-generate'], {
+    execFileSync('npx', ['prisma', 'db', 'push'], {
       env: { ...process.env, DATABASE_URL: 'file:./e2e-agents.db' },
       stdio: 'ignore',
     });

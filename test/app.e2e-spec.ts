@@ -10,7 +10,7 @@ describe('AppController (e2e)', () => {
 
   beforeEach(async () => {
     process.env.DATABASE_URL = 'file:./app-e2e.db';
-    execFileSync('npx', ['prisma', 'db', 'push', '--skip-generate'], {
+    execFileSync('npx', ['prisma', 'db', 'push'], {
       env: { ...process.env, DATABASE_URL: 'file:./app-e2e.db' },
       stdio: 'ignore',
     });
