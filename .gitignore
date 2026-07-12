@@ -53,6 +53,8 @@ pids
 *.pid.lock
 
 # Local SQLite databases
+/*.db
+/*.db-journal
 prisma/*.db
 prisma/*.db-journal
 

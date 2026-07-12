@@ -8,7 +8,7 @@ describe('PrismaAgentStoreRepository', () => {
 
   beforeAll(async () => {
     process.env.DATABASE_URL = 'file:./unit-agents.db';
-    execFileSync('npx', ['prisma', 'db', 'push', '--skip-generate'], {
+    execFileSync('npx', ['prisma', 'db', 'push'], {
       env: { ...process.env, DATABASE_URL: 'file:./unit-agents.db' },
       stdio: 'ignore',
     });
