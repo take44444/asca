@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
-import { AgentDao } from './agent.dao';
+import { AgentDao, AgentUpdateDao } from './agent.dao';
 import { AgentStoreRepository } from './agent-store.repository.interface';
 
 /** Prisma-backed store for user-owned agents. */
@@ -25,6 +25,31 @@ export class PrismaAgentStoreRepository implements AgentStoreRepository {
       where: { author },
       orderBy: { id: 'asc' },
     });
+  }
+
+  /** Finds one agent by its unique identifier. */
+  async findById(id: string): Promise<AgentDao | null> {
+    return this.prismaService.agent.findUnique({
+      where: { id },
+    });
+  }
+
+  /** Updates an agent only when its id and owner email both match. */
+  async updateByIdAndAuthor(
+    id: string,
+    author: string,
+    update: AgentUpdateDao,
+  ): Promise<AgentDao | null> {
+    const result: { readonly count: number } =
+      await this.prismaService.agent.updateMany({
+        where: { id, author },
+        data: update,
+      });
+    if (result.count !== 1) {
+      return null;
+    }
+
+    return this.findById(id);
   }
 
   /** Deletes an agent only when its id and owner email both match. */

@@ -22,7 +22,7 @@ Add authenticated agent customization for owner-only single-agent retrieval and 
 
 **Project Type**: Web service
 
-**Performance Goals**: 95% of single-agent retrieval and update requests complete in under 1 second in local and CI-like test environments
+**Performance Goals**: 95% of single-agent retrieval and update requests should complete in under 1 second in local and CI-like test environments; this is tracked as a non-buildable acceptance metric outside this feature's required automated verification gates
 
 **Constraints**: All retrieval and update actions require bearer JWT authentication; no role data may be returned before authentication and owner authorization succeed; services must use domain models and repository abstractions only; DTOs and DAOs must not cross into the service layer; new or modified behavior requires at least 80% changed-code coverage
 

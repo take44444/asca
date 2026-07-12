@@ -7,6 +7,7 @@ import {
   HttpCode,
   Inject,
   Param,
+  Patch,
   Post,
   Get,
 } from '@nestjs/common';
@@ -19,8 +20,18 @@ import {
   MANAGE_AGENTS_SERVICE,
   ManageAgentsService,
 } from '../service/manage-agents/manage-agents.service.interface';
-import { Agent, AgentSummary } from '../service/manage-agents/agent.model';
-import { AgentSummaryDto, CreatedAgentDto, CreateAgentDto } from './agent.dto';
+import {
+  Agent,
+  AgentSummary,
+  UpdateAgent,
+} from '../service/manage-agents/agent.model';
+import {
+  AgentDetailDto,
+  AgentSummaryDto,
+  CreatedAgentDto,
+  CreateAgentDto,
+  UpdateAgentDto,
+} from './agent.dto';
 
 /** Handles authenticated HTTP requests for user-owned agents. */
 @Controller('agents')
@@ -65,6 +76,36 @@ export class AgentsController {
     }));
   }
 
+  /** Gets one agent owned by the authenticated user. */
+  @Get(':id')
+  async get(
+    @Headers('authorization') authorizationHeader: string | undefined,
+    @Param('id') id: string,
+  ): Promise<AgentDetailDto> {
+    const user: AuthenticatedUser =
+      await this.authenticate(authorizationHeader);
+    const agent: Agent = await this.manageAgentsService.get(id, user);
+    return this.toAgentDetailDto(agent);
+  }
+
+  /** Updates one agent owned by the authenticated user. */
+  @Patch(':id')
+  async update(
+    @Headers('authorization') authorizationHeader: string | undefined,
+    @Param('id') id: string,
+    @Body() body: UpdateAgentDto,
+  ): Promise<AgentDetailDto> {
+    const user: AuthenticatedUser =
+      await this.authenticate(authorizationHeader);
+    const update: UpdateAgent = this.getValidatedUpdate(body);
+    const agent: Agent = await this.manageAgentsService.update(
+      id,
+      update,
+      user,
+    );
+    return this.toAgentDetailDto(agent);
+  }
+
   /** Deletes one agent owned by the authenticated user. */
   @Delete(':id')
   @HttpCode(204)
@@ -97,5 +138,35 @@ export class AgentsController {
     }
 
     return trimmedName;
+  }
+
+  private getValidatedUpdate(body: UpdateAgentDto): UpdateAgent {
+    const update: { name?: string; role?: string } = {};
+
+    if (body.name !== undefined) {
+      update.name = this.getValidatedName({ name: body.name });
+    }
+
+    if (body.role !== undefined) {
+      if (typeof body.role !== 'string') {
+        throw new BadRequestException();
+      }
+      update.role = body.role;
+    }
+
+    if (update.name === undefined && update.role === undefined) {
+      throw new BadRequestException();
+    }
+
+    return update;
+  }
+
+  private toAgentDetailDto(agent: Agent): AgentDetailDto {
+    return {
+      id: agent.id,
+      name: agent.name,
+      author: agent.author,
+      role: agent.role,
+    };
   }
 }

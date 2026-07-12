@@ -103,7 +103,7 @@ As an agent author, I want only my account to retrieve or modify my agent's full
 - **SC-001**: 100% of valid owner update attempts for existing agents return the updated agent details with id, name, author, and role.
 - **SC-002**: 100% of unauthorized retrieval or update attempts by non-authors are rejected without exposing role content or changing the agent.
 - **SC-003**: 100% of malformed update requests and update requests with no fields are rejected with a clear client-error outcome.
-- **SC-004**: 95% of single-agent retrieval and update requests complete in under 1 second in the standard development and test environment.
+- **SC-004**: 95% of single-agent retrieval and update requests should complete in under 1 second in the standard development and test environment; this is a non-buildable acceptance metric outside this implementation scope and is not a required automated verification gate for this feature.
 - **SC-005**: Existing agent list responses continue to exclude role content in 100% of list retrieval checks.
 
 ## Assumptions
@@ -113,3 +113,4 @@ As an agent author, I want only my account to retrieve or modify my agent's full
 - The unique agent identifier used by existing agent management remains the identifier for retrieval and update.
 - Role content is treated as user-authored text and may be empty, but it is returned only in single-agent detail and update responses.
 - Production database integration remains outside the scope of this feature; development and automated testing use the existing non-production persistence setup.
+- Latency measurement for the 1-second retrieval/update target is outside this feature's build scope and may be assessed separately after the functional implementation is complete.

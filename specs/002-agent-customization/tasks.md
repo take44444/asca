@@ -26,10 +26,10 @@
 
 **Purpose**: Confirm the current NestJS/Prisma test environment and contract artifacts are ready for test-first implementation.
 
-- [ ] T001 Review existing agent module boundaries in `src/agents/agents.module.ts`
-- [ ] T002 Review current Prisma Agent schema and SQLite test setup in `prisma/schema.prisma`
-- [ ] T003 [P] Review API contract expectations for GET and PATCH agent operations in `specs/002-agent-customization/contracts/agents.openapi.yaml`
-- [ ] T004 [P] Review TDD validation scenarios and verification commands in `specs/002-agent-customization/quickstart.md`
+- [X] T001 Review existing agent module boundaries in `src/agents/agents.module.ts`
+- [X] T002 Review current Prisma Agent schema and SQLite test setup in `prisma/schema.prisma`
+- [X] T003 [P] Review API contract expectations for GET and PATCH agent operations in `specs/002-agent-customization/contracts/agents.openapi.yaml`
+- [X] T004 [P] Review TDD validation scenarios and verification commands in `specs/002-agent-customization/quickstart.md`
 
 ---
 
@@ -39,10 +39,10 @@
 
 **CRITICAL**: No user story implementation can begin until this phase is complete.
 
-- [ ] T005 Identify existing authentication request-user mapping used by agents controller tests in `src/agents/controller/agents.controller.spec.ts`
-- [ ] T006 Identify existing service error handling patterns for not-found and forbidden outcomes in `src/agents/service/manage-agents/manage-agents.service.ts`
-- [ ] T007 Identify existing repository test database lifecycle and Prisma client setup in `src/agents/repository/agent-store/prisma-agent-store.repository.spec.ts`
-- [ ] T008 Identify existing e2e JWT setup and auth fixtures in `test/agents.e2e-spec.ts`
+- [X] T005 Identify existing authentication request-user mapping used by agents controller tests in `src/agents/controller/agents.controller.spec.ts`
+- [X] T006 Identify existing service error handling patterns for not-found and forbidden outcomes in `src/agents/service/manage-agents/manage-agents.service.ts`
+- [X] T007 Identify existing repository test database lifecycle and Prisma client setup in `src/agents/repository/agent-store/prisma-agent-store.repository.spec.ts`
+- [X] T008 Identify existing e2e JWT setup and auth fixtures in `test/agents.e2e-spec.ts`
 
 **Checkpoint**: Foundation ready - user story tests and implementation can now begin.
 
@@ -58,25 +58,25 @@
 
 > Write these tests FIRST and ensure they FAIL before implementation.
 
-- [ ] T009 [P] [US1] Add controller tests for PATCH name-and-role, name-only, role-only, and invalid payload outcomes in `src/agents/controller/agents.controller.spec.ts`
-- [ ] T010 [P] [US1] Add service tests for owner-authorized partial updates and omitted-field preservation in `src/agents/service/manage-agents/manage-agents.service.spec.ts`
-- [ ] T011 [P] [US1] Add repository tests for role persistence and owner-aware update by id and author in `src/agents/repository/agent-store/prisma-agent-store.repository.spec.ts`
-- [ ] T012 [P] [US1] Add e2e tests for authenticated PATCH success and 400 invalid payload outcomes in `test/agents.e2e-spec.ts`
-- [ ] T013 [US1] Run the new US1 tests and verify they fail for missing update behavior in `src/agents/service/manage-agents/manage-agents.service.spec.ts`
+- [X] T009 [P] [US1] Add controller tests for PATCH name-and-role, name-only, role-only, invalid payload, and unknown-id not-found outcomes in `src/agents/controller/agents.controller.spec.ts`
+- [X] T010 [P] [US1] Add service tests for owner-authorized partial updates, omitted-field preservation, and missing-id not-found update behavior in `src/agents/service/manage-agents/manage-agents.service.spec.ts`
+- [X] T011 [P] [US1] Add repository tests for role persistence and owner-aware update by id and author in `src/agents/repository/agent-store/prisma-agent-store.repository.spec.ts`
+- [X] T012 [P] [US1] Add e2e tests for authenticated PATCH success, 400 invalid payload, and 404 unknown-id outcomes in `test/agents.e2e-spec.ts`
+- [X] T013 [US1] Run the new US1 tests and verify they fail for missing update behavior in `src/agents/service/manage-agents/manage-agents.service.spec.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T014 [US1] Add nullable/default role persistence to the Agent model in `prisma/schema.prisma`
-- [ ] T015 [US1] Regenerate Prisma client and align generated artifacts for the updated Agent schema in `prisma/schema.prisma`
-- [ ] T016 [US1] Add role to AgentDao and ensure absent role maps to an empty string contract value in `src/agents/repository/agent-store/agent.dao.ts`
-- [ ] T017 [US1] Add role to Agent and define an UpdateAgent input domain type in `src/agents/service/manage-agents/agent.model.ts`
-- [ ] T018 [US1] Add an owner-aware update method to the repository interface in `src/agents/repository/agent-store/agent-store.repository.interface.ts`
-- [ ] T019 [US1] Implement owner-aware update persistence with name/role partial data in `src/agents/repository/agent-store/prisma-agent-store.repository.ts`
-- [ ] T020 [US1] Add update capability to the service interface in `src/agents/service/manage-agents/manage-agents.service.interface.ts`
-- [ ] T021 [US1] Implement update validation, owner update orchestration, and domain mapping in `src/agents/service/manage-agents/manage-agents.service.ts`
-- [ ] T022 [US1] Add UpdateAgentDto and AgentDetailDto with class-validator/class-transformer rules in `src/agents/controller/agent.dto.ts`
-- [ ] T023 [US1] Add authenticated PATCH `/agents/:id` endpoint and response mapping in `src/agents/controller/agents.controller.ts`
-- [ ] T024 [US1] Run US1 unit and e2e tests and verify they pass in `test/agents.e2e-spec.ts`
+- [X] T014 [US1] Add nullable/default role persistence to the Agent model in `prisma/schema.prisma`
+- [X] T015 [US1] Regenerate Prisma client and align generated artifacts for the updated Agent schema in `prisma/schema.prisma`
+- [X] T016 [US1] Add role to AgentDao and ensure absent role maps to an empty string contract value in `src/agents/repository/agent-store/agent.dao.ts`
+- [X] T017 [US1] Add role to Agent and define an UpdateAgent input domain type in `src/agents/service/manage-agents/agent.model.ts`
+- [X] T018 [US1] Add an owner-aware update method to the repository interface in `src/agents/repository/agent-store/agent-store.repository.interface.ts`
+- [X] T019 [US1] Implement owner-aware update persistence with name/role partial data in `src/agents/repository/agent-store/prisma-agent-store.repository.ts`
+- [X] T020 [US1] Add update capability to the service interface in `src/agents/service/manage-agents/manage-agents.service.interface.ts`
+- [X] T021 [US1] Implement update validation, missing-id not-found mapping, owner update orchestration, and domain mapping in `src/agents/service/manage-agents/manage-agents.service.ts`
+- [X] T022 [US1] Add UpdateAgentDto and AgentDetailDto with class-validator/class-transformer rules in `src/agents/controller/agent.dto.ts`
+- [X] T023 [US1] Add authenticated PATCH `/agents/:id` endpoint and response mapping in `src/agents/controller/agents.controller.ts`
+- [X] T024 [US1] Run US1 unit and e2e tests and verify they pass in `test/agents.e2e-spec.ts`
 
 **Checkpoint**: User Story 1 is fully functional and testable independently.
 
@@ -92,20 +92,20 @@
 
 > Write these tests FIRST and ensure they FAIL before implementation.
 
-- [ ] T025 [P] [US2] Add controller tests for GET `/agents/:id` success and not-found mapping in `src/agents/controller/agents.controller.spec.ts`
-- [ ] T026 [P] [US2] Add service tests for owner-authorized retrieval and missing-id not-found behavior in `src/agents/service/manage-agents/manage-agents.service.spec.ts`
-- [ ] T027 [P] [US2] Add repository tests for lookup by id returning role data in `src/agents/repository/agent-store/prisma-agent-store.repository.spec.ts`
-- [ ] T028 [P] [US2] Add e2e tests for authenticated GET `/agents/:id` success and 404 outcomes in `test/agents.e2e-spec.ts`
-- [ ] T029 [US2] Run the new US2 tests and verify they fail for missing retrieval behavior in `src/agents/controller/agents.controller.spec.ts`
+- [X] T025 [P] [US2] Add controller tests for GET `/agents/:id` success and not-found mapping in `src/agents/controller/agents.controller.spec.ts`
+- [X] T026 [P] [US2] Add service tests for owner-authorized retrieval and missing-id not-found behavior in `src/agents/service/manage-agents/manage-agents.service.spec.ts`
+- [X] T027 [P] [US2] Add repository tests for lookup by id returning role data in `src/agents/repository/agent-store/prisma-agent-store.repository.spec.ts`
+- [X] T028 [P] [US2] Add e2e tests for authenticated GET `/agents/:id` success and 404 outcomes in `test/agents.e2e-spec.ts`
+- [X] T029 [US2] Run the new US2 tests and verify they fail for missing retrieval behavior in `src/agents/controller/agents.controller.spec.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T030 [US2] Add lookup-by-id method to the repository interface in `src/agents/repository/agent-store/agent-store.repository.interface.ts`
-- [ ] T031 [US2] Implement lookup-by-id persistence and role mapping in `src/agents/repository/agent-store/prisma-agent-store.repository.ts`
-- [ ] T032 [US2] Add get capability to the service interface in `src/agents/service/manage-agents/manage-agents.service.interface.ts`
-- [ ] T033 [US2] Implement get-by-id service behavior with not-found mapping and domain conversion in `src/agents/service/manage-agents/manage-agents.service.ts`
-- [ ] T034 [US2] Add authenticated GET `/agents/:id` endpoint and AgentDetailDto mapping in `src/agents/controller/agents.controller.ts`
-- [ ] T035 [US2] Run US2 unit and e2e tests and verify they pass in `test/agents.e2e-spec.ts`
+- [X] T030 [US2] Add lookup-by-id method to the repository interface in `src/agents/repository/agent-store/agent-store.repository.interface.ts`
+- [X] T031 [US2] Implement lookup-by-id persistence and role mapping in `src/agents/repository/agent-store/prisma-agent-store.repository.ts`
+- [X] T032 [US2] Add get capability to the service interface in `src/agents/service/manage-agents/manage-agents.service.interface.ts`
+- [X] T033 [US2] Implement get-by-id service behavior with not-found mapping and domain conversion in `src/agents/service/manage-agents/manage-agents.service.ts`
+- [X] T034 [US2] Add authenticated GET `/agents/:id` endpoint and AgentDetailDto mapping in `src/agents/controller/agents.controller.ts`
+- [X] T035 [US2] Run US2 unit and e2e tests and verify they pass in `test/agents.e2e-spec.ts`
 
 **Checkpoint**: User Stories 1 and 2 work independently.
 
@@ -121,17 +121,17 @@
 
 > Write these tests FIRST and ensure they FAIL before implementation.
 
-- [ ] T036 [P] [US3] Add controller tests for forbidden cross-owner GET and PATCH outcomes in `src/agents/controller/agents.controller.spec.ts`
-- [ ] T037 [P] [US3] Add service tests for cross-owner forbidden retrieval and update without data mutation in `src/agents/service/manage-agents/manage-agents.service.spec.ts`
-- [ ] T038 [P] [US3] Add e2e tests for 401 unauthenticated and 403 cross-owner GET/PATCH outcomes in `test/agents.e2e-spec.ts`
-- [ ] T039 [US3] Run the new US3 tests and verify they fail for missing ownership protection behavior in `src/agents/service/manage-agents/manage-agents.service.spec.ts`
+- [X] T036 [P] [US3] Add controller tests for forbidden cross-owner GET and PATCH outcomes in `src/agents/controller/agents.controller.spec.ts`
+- [X] T037 [P] [US3] Add service tests for cross-owner forbidden retrieval and update without data mutation in `src/agents/service/manage-agents/manage-agents.service.spec.ts`
+- [X] T038 [P] [US3] Add e2e tests for 401 unauthenticated and 403 cross-owner GET/PATCH outcomes in `test/agents.e2e-spec.ts`
+- [X] T039 [US3] Run the new US3 tests and verify they fail for missing ownership protection behavior in `src/agents/service/manage-agents/manage-agents.service.spec.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T040 [US3] Implement forbidden owner checks for retrieval and update in `src/agents/service/manage-agents/manage-agents.service.ts`
-- [ ] T041 [US3] Ensure controller maps forbidden service outcomes without returning agent details in `src/agents/controller/agents.controller.ts`
-- [ ] T042 [US3] Verify repository update leaves cross-owner records unchanged in `src/agents/repository/agent-store/prisma-agent-store.repository.ts`
-- [ ] T043 [US3] Run US3 unit and e2e tests and verify they pass in `test/agents.e2e-spec.ts`
+- [X] T040 [US3] Implement forbidden owner checks for retrieval and update in `src/agents/service/manage-agents/manage-agents.service.ts`
+- [X] T041 [US3] Ensure controller maps forbidden service outcomes without returning agent details in `src/agents/controller/agents.controller.ts`
+- [X] T042 [US3] Verify repository update leaves cross-owner records unchanged in `src/agents/repository/agent-store/prisma-agent-store.repository.ts`
+- [X] T043 [US3] Run US3 unit and e2e tests and verify they pass in `test/agents.e2e-spec.ts`
 
 **Checkpoint**: All user stories are independently functional.
 
@@ -141,15 +141,15 @@
 
 **Purpose**: Final validation for list response compatibility, API contract alignment, coverage, and style.
 
-- [ ] T044 [P] Add controller regression test confirming list responses omit role in `src/agents/controller/agents.controller.spec.ts`
-- [ ] T045 [P] Add repository regression test confirming list ordering and summary compatibility after role persistence in `src/agents/repository/agent-store/prisma-agent-store.repository.spec.ts`
-- [ ] T046 [P] Add e2e regression test confirming GET `/agents` omits role content in `test/agents.e2e-spec.ts`
-- [ ] T047 Update OpenAPI contract examples or schema notes if implementation response details changed in `specs/002-agent-customization/contracts/agents.openapi.yaml`
-- [ ] T048 Run lint and resolve any explicit typing, public doc comment, or no-any issues in `src/agents/controller/agents.controller.ts`
-- [ ] T049 Run all unit tests and resolve regressions in `src/agents/service/manage-agents/manage-agents.service.spec.ts`
-- [ ] T050 Run all e2e tests and resolve regressions in `test/agents.e2e-spec.ts`
-- [ ] T051 Run coverage verification and confirm at least 80% coverage for changed agent customization behavior in `specs/002-agent-customization/quickstart.md`
-- [ ] T052 Review architecture boundaries to ensure DTOs and DAOs do not cross into the service layer in `src/agents/service/manage-agents/manage-agents.service.ts`
+- [X] T044 [P] Add controller regression test confirming list responses omit role in `src/agents/controller/agents.controller.spec.ts`
+- [X] T045 [P] Add repository regression test confirming list ordering and summary compatibility after role persistence in `src/agents/repository/agent-store/prisma-agent-store.repository.spec.ts`
+- [X] T046 [P] Add e2e regression test confirming GET `/agents` omits role content in `test/agents.e2e-spec.ts`
+- [X] T047 Update OpenAPI contract examples or schema notes if implementation response details changed in `specs/002-agent-customization/contracts/agents.openapi.yaml`
+- [X] T048 Run lint and resolve any explicit typing, public doc comment, or no-any issues in `src/agents/controller/agents.controller.ts`
+- [X] T049 Run all unit tests and resolve regressions in `src/agents/service/manage-agents/manage-agents.service.spec.ts`
+- [X] T050 Run all e2e tests and resolve regressions in `test/agents.e2e-spec.ts`
+- [X] T051 Run coverage verification and confirm at least 80% coverage for changed agent customization behavior in `specs/002-agent-customization/quickstart.md`
+- [X] T052 Review architecture boundaries to ensure DTOs and DAOs do not cross into the service layer in `src/agents/service/manage-agents/manage-agents.service.ts`
 
 ---
 

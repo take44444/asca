@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
@@ -10,7 +11,7 @@ import {
   AgentStoreRepository,
 } from '../../repository/agent-store/agent-store.repository.interface';
 import { AgentDao } from '../../repository/agent-store/agent.dao';
-import { Agent, AgentSummary } from './agent.model';
+import { Agent, AgentSummary, UpdateAgent } from './agent.model';
 import { ManageAgentsService } from './manage-agents.service.interface';
 
 /** Domain service for creating, listing, and deleting user-owned agents. */
@@ -46,6 +47,35 @@ export class ManageAgentsDomainService implements ManageAgentsService {
     }));
   }
 
+  /** Gets one agent owned by the authenticated user. */
+  async get(id: string, user: AuthenticatedUser): Promise<Agent> {
+    const agent: AgentDao = await this.findExistingAgent(id);
+    this.assertOwner(agent, user);
+    return this.toAgent(agent);
+  }
+
+  /** Updates one agent owned by the authenticated user. */
+  async update(
+    id: string,
+    update: UpdateAgent,
+    user: AuthenticatedUser,
+  ): Promise<Agent> {
+    const agent: AgentDao = await this.findExistingAgent(id);
+    this.assertOwner(agent, user);
+
+    const updatedAgent: AgentDao | null =
+      await this.agentStoreRepository.updateByIdAndAuthor(
+        id,
+        user.email,
+        update,
+      );
+    if (updatedAgent === null) {
+      throw new ForbiddenException();
+    }
+
+    return this.toAgent(updatedAgent);
+  }
+
   /** Deletes an agent owned by the authenticated user. */
   async delete(id: string, user: AuthenticatedUser): Promise<void> {
     const deleted: boolean =
@@ -60,6 +90,22 @@ export class ManageAgentsDomainService implements ManageAgentsService {
       id: agent.id,
       name: agent.name,
       author: agent.author,
+      role: agent.role ?? '',
     };
+  }
+
+  private async findExistingAgent(id: string): Promise<AgentDao> {
+    const agent: AgentDao | null = await this.agentStoreRepository.findById(id);
+    if (agent === null) {
+      throw new NotFoundException();
+    }
+
+    return agent;
+  }
+
+  private assertOwner(agent: AgentDao, user: AuthenticatedUser): void {
+    if (agent.author !== user.email) {
+      throw new ForbiddenException();
+    }
   }
 }

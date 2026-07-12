@@ -60,6 +60,8 @@ describe('AgentsController (e2e)', () => {
   it.each([
     ['POST', '/agents'],
     ['GET', '/agents'],
+    ['GET', '/agents/test-id'],
+    ['PATCH', '/agents/test-id'],
     ['DELETE', '/agents/test-id'],
   ])(
     'rejects unauthenticated %s %s and leaves data unchanged',
@@ -75,7 +77,11 @@ describe('AgentsController (e2e)', () => {
               .send({ name: 'Support Agent' })
           : method === 'GET'
             ? await request(app.getHttpServer()).get(path)
-            : await request(app.getHttpServer()).delete(path);
+            : method === 'PATCH'
+              ? await request(app.getHttpServer())
+                  .patch(path)
+                  .send({ name: 'Updated Agent' })
+              : await request(app.getHttpServer()).delete(path);
 
       expect(response.status).toBe(401);
       await expect(prismaService.agent.count()).resolves.toBe(1);
@@ -85,6 +91,8 @@ describe('AgentsController (e2e)', () => {
   it.each([
     ['POST', '/agents'],
     ['GET', '/agents'],
+    ['GET', '/agents/test-id'],
+    ['PATCH', '/agents/test-id'],
     ['DELETE', '/agents/test-id'],
   ])(
     'rejects invalid-token %s %s and leaves data unchanged',
@@ -103,9 +111,14 @@ describe('AgentsController (e2e)', () => {
             ? await request(app.getHttpServer())
                 .get(path)
                 .set('Authorization', 'Bearer invalid')
-            : await request(app.getHttpServer())
-                .delete(path)
-                .set('Authorization', 'Bearer invalid');
+            : method === 'PATCH'
+              ? await request(app.getHttpServer())
+                  .patch(path)
+                  .set('Authorization', 'Bearer invalid')
+                  .send({ name: 'Updated Agent' })
+              : await request(app.getHttpServer())
+                  .delete(path)
+                  .set('Authorization', 'Bearer invalid');
 
       expect(response.status).toBe(401);
       await expect(prismaService.agent.count()).resolves.toBe(1);
@@ -172,6 +185,7 @@ describe('AgentsController (e2e)', () => {
     }
     expect(typeof firstAgent.id).toBe('string');
     expect(firstAgent.name).toBe('User Agent');
+    expect(firstAgent).not.toHaveProperty('role');
   });
 
   it('returns an empty list for users without agents', async () => {
@@ -185,6 +199,154 @@ describe('AgentsController (e2e)', () => {
     const responseBody: unknown = response.body;
     expect(responseBody).toEqual([]);
   });
+
+  it('gets an owned agent detail with role', async () => {
+    const token: string = await signToken('user@example.com');
+    const agent = await prismaService.agent.create({
+      data: {
+        name: 'Support Agent',
+        author: 'user@example.com',
+        role: 'Answer support questions.',
+      },
+    });
+
+    const response = await request(app.getHttpServer())
+      .get(`/agents/${agent.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+
+    expect(response.body).toEqual({
+      id: agent.id,
+      name: 'Support Agent',
+      author: 'user@example.com',
+      role: 'Answer support questions.',
+    });
+  });
+
+  it('returns 404 for unknown get', async () => {
+    const token: string = await signToken('user@example.com');
+
+    await request(app.getHttpServer())
+      .get('/agents/missing-agent')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(404);
+  });
+
+  it('updates an owned agent with name and role', async () => {
+    const token: string = await signToken('user@example.com');
+    const agent = await prismaService.agent.create({
+      data: { name: 'Support Agent', author: 'user@example.com' },
+    });
+
+    const response = await request(app.getHttpServer())
+      .patch(`/agents/${agent.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        name: 'Updated Agent',
+        role: 'Answer billing questions.',
+      })
+      .expect(200);
+
+    expect(response.body).toEqual({
+      id: agent.id,
+      name: 'Updated Agent',
+      author: 'user@example.com',
+      role: 'Answer billing questions.',
+    });
+  });
+
+  it.each([
+    [{ name: 'Updated Agent' }, 'Updated Agent', 'Original role.'],
+    [{ role: 'Updated role.' }, 'Support Agent', 'Updated role.'],
+  ])(
+    'updates an owned agent with partial payload %p',
+    async (body: object, expectedName: string, expectedRole: string) => {
+      const token: string = await signToken('user@example.com');
+      const agent = await prismaService.agent.create({
+        data: {
+          name: 'Support Agent',
+          author: 'user@example.com',
+          role: 'Original role.',
+        },
+      });
+
+      const response = await request(app.getHttpServer())
+        .patch(`/agents/${agent.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send(body)
+        .expect(200);
+
+      expect(response.body).toEqual({
+        id: agent.id,
+        name: expectedName,
+        author: 'user@example.com',
+        role: expectedRole,
+      });
+    },
+  );
+
+  it.each([{}, { name: '' }, { name: '   ' }, { extra: 'nope' }])(
+    'rejects invalid update payload %p',
+    async (body: object) => {
+      const token: string = await signToken('user@example.com');
+      const agent = await prismaService.agent.create({
+        data: { name: 'Support Agent', author: 'user@example.com' },
+      });
+
+      await request(app.getHttpServer())
+        .patch(`/agents/${agent.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send(body)
+        .expect(400);
+      await expect(
+        prismaService.agent.findUnique({ where: { id: agent.id } }),
+      ).resolves.toMatchObject({ name: 'Support Agent', role: null });
+    },
+  );
+
+  it('returns 404 for unknown update', async () => {
+    const token: string = await signToken('user@example.com');
+
+    await request(app.getHttpServer())
+      .patch('/agents/missing-agent')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ name: 'Updated Agent' })
+      .expect(404);
+  });
+
+  it.each(['get', 'patch'])(
+    'returns 403 for cross-owner %s without changing data',
+    async (method: string) => {
+      const token: string = await signToken('user@example.com');
+      const otherAgent = await prismaService.agent.create({
+        data: {
+          name: 'Other Agent',
+          author: 'other@example.com',
+          role: 'Other role.',
+        },
+      });
+
+      if (method === 'get') {
+        await request(app.getHttpServer())
+          .get(`/agents/${otherAgent.id}`)
+          .set('Authorization', `Bearer ${token}`)
+          .expect(403);
+      } else {
+        await request(app.getHttpServer())
+          .patch(`/agents/${otherAgent.id}`)
+          .set('Authorization', `Bearer ${token}`)
+          .send({ name: 'Updated Agent', role: 'Updated role.' })
+          .expect(403);
+      }
+
+      await expect(
+        prismaService.agent.findUnique({ where: { id: otherAgent.id } }),
+      ).resolves.toMatchObject({
+        name: 'Other Agent',
+        role: 'Other role.',
+      });
+    },
+  );
 
   it('deletes an owned agent and removes it from subsequent lists', async () => {
     const token: string = await signToken('user@example.com');

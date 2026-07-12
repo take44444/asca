@@ -8,6 +8,9 @@ export interface Agent {
 
   /** Authenticated owner email address. */
   readonly author: string;
+
+  /** User-authored role instructions. Empty string means unset. */
+  readonly role: string;
 }
 
 /** Agent summary exposed when listing owned agents. */
@@ -17,4 +20,13 @@ export interface AgentSummary {
 
   /** User-visible agent name. */
   readonly name: string;
+}
+
+/** Partial customization changes for an existing agent. */
+export interface UpdateAgent {
+  /** New user-visible agent name. */
+  readonly name?: string;
+
+  /** New user-authored role instructions. */
+  readonly role?: string;
 }
