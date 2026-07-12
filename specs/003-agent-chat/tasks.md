@@ -28,9 +28,9 @@
 
 **Purpose**: Add required dependencies and create the shared service directories used by all chat stories.
 
-- [ ] T001 Install AI SDK dependencies `ai` and `@ai-sdk/openai` with `npm install ai @ai-sdk/openai` updating package.json and package-lock.json
-- [ ] T002 Create chat service directories at src/agents/service/chat-agent/ and src/agents/service/generate-agent-response/
-- [ ] T003 Add base A.S.C.A. instruction text to src/agents/service/generate-agent-response/instructions.md
+- [X] T001 Install AI SDK dependencies `ai` and `@ai-sdk/openai` with `npm install ai @ai-sdk/openai` updating package.json and package-lock.json
+- [X] T002 Create chat service directories at src/agents/service/chat-agent/ and src/agents/service/generate-agent-response/
+- [X] T003 Add base A.S.C.A. instruction text to src/agents/service/generate-agent-response/instructions.md
 
 ---
 
@@ -40,12 +40,12 @@
 
 **CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T004 [P] Define ChatMessage, ChatRequest, and ChatResponseStream domain types in src/agents/service/chat-agent/agent-chat.model.ts
-- [ ] T005 [P] Define CHAT_AGENT_SERVICE and ChatAgentService interface in src/agents/service/chat-agent/chat-agent.service.interface.ts
-- [ ] T006 [P] Define GENERATE_AGENT_RESPONSE_SERVICE and GenerateAgentResponseService interface in src/agents/service/generate-agent-response/generate-agent-response.service.interface.ts
-- [ ] T007 Register ChatAgentDomainService and GenerateOpenAiAgentResponseService providers and interface tokens in src/agents/agents.module.ts
-- [ ] T008 Add AgentChatRequestDto, AgentChatMessageDto, and chat response typing in src/agents/controller/agent.dto.ts
-- [ ] T009 Update the OpenAPI contract notes for generated task traceability in specs/003-agent-chat/contracts/agents.openapi.yaml
+- [X] T004 [P] Define ChatMessage, ChatRequest, and ChatResponseStream domain types in src/agents/service/chat-agent/agent-chat.model.ts
+- [X] T005 [P] Define CHAT_AGENT_SERVICE and ChatAgentService interface in src/agents/service/chat-agent/chat-agent.service.interface.ts
+- [X] T006 [P] Define GENERATE_AGENT_RESPONSE_SERVICE and GenerateAgentResponseService interface in src/agents/service/generate-agent-response/generate-agent-response.service.interface.ts
+- [X] T007 Register ChatAgentDomainService and GenerateOpenAiAgentResponseService providers and interface tokens in src/agents/agents.module.ts
+- [X] T008 Add AgentChatRequestDto, AgentChatMessageDto, and chat response typing in src/agents/controller/agent.dto.ts
+- [X] T009 Update the OpenAPI contract notes for generated task traceability in specs/003-agent-chat/contracts/agents.openapi.yaml
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in priority order or in parallel if staffed.
 
@@ -53,28 +53,28 @@
 
 ## Phase 3: User Story 1 - Chat With My Agent (Priority: P1) - MVP
 
-**Goal**: An authenticated user can send valid chat input to an owned agent and receive a streamed plain text response that uses base instructions and role guidance when appropriate.
+**Goal**: An authenticated user can send valid chat input to an owned agent and receive a streamed AI SDK UI message response that uses base instructions and role guidance when appropriate.
 
-**Independent Test**: Authenticate as an agent author, send a valid `POST /agents/{id}/chat` request to an existing owned agent, and confirm streamed text is returned.
+**Independent Test**: Authenticate as an agent author, send a valid `POST /agents/{id}/chat` request to an existing owned agent, and confirm a streamed UI message response is returned.
 
 ### Tests for User Story 1 (REQUIRED)
 
 > Write these tests FIRST and verify they FAIL for the expected missing behavior before implementation.
 
-- [ ] T010 [P] [US1] Add controller tests for successful single-message and message-list chat delegation in src/agents/controller/agents.controller.spec.ts
-- [ ] T011 [P] [US1] Add chat service tests for owned-agent lookup, role forwarding, and generation start in src/agents/service/chat-agent/chat-agent.service.spec.ts
-- [ ] T012 [P] [US1] Add response-generator tests for loading instructions.md, using ASCA_MODEL, and streaming text in src/agents/service/generate-agent-response/generate-agent-response.service.spec.ts
-- [ ] T013 [P] [US1] Add e2e test for authenticated owner chat returning streamed plain text in test/agents.e2e-spec.ts
-- [ ] T014 [US1] Run US1 tests and verify they fail for missing chat endpoint/service behavior using src/agents/controller/agents.controller.spec.ts, src/agents/service/chat-agent/chat-agent.service.spec.ts, src/agents/service/generate-agent-response/generate-agent-response.service.spec.ts, and test/agents.e2e-spec.ts
+- [X] T010 [P] [US1] Add controller tests for successful single-message and message-list chat delegation in src/agents/controller/agents.controller.spec.ts
+- [X] T011 [P] [US1] Add chat service tests for owned-agent lookup, role forwarding, and generation start in src/agents/service/chat-agent/chat-agent.service.spec.ts
+- [X] T012 [P] [US1] Add response-generator tests for loading instructions.md, using ASCA_MODEL, and streaming text in src/agents/service/generate-agent-response/generate-agent-response.service.spec.ts
+- [X] T013 [P] [US1] Add e2e test for authenticated owner chat returning a streamed AI SDK UI message response in test/agents.e2e-spec.ts
+- [X] T014 [US1] Run US1 tests and verify they fail for missing chat endpoint/service behavior using src/agents/controller/agents.controller.spec.ts, src/agents/service/chat-agent/chat-agent.service.spec.ts, src/agents/service/generate-agent-response/generate-agent-response.service.spec.ts, and test/agents.e2e-spec.ts
 
 ### Implementation for User Story 1
 
-- [ ] T015 [P] [US1] Implement ChatAgentDomainService owned-agent orchestration in src/agents/service/chat-agent/chat-agent.service.ts
-- [ ] T016 [P] [US1] Implement GenerateOpenAiAgentResponseService instruction loading, ASCA_MODEL validation, OpenAI model creation, and text stream generation in src/agents/service/generate-agent-response/generate-agent-response.service.ts
-- [ ] T017 [US1] Implement chat request DTO validation and mapping helpers in src/agents/controller/agent.dto.ts
-- [ ] T018 [US1] Add authenticated POST /agents/:id/chat controller action that delegates to ChatAgentService in src/agents/controller/agents.controller.ts
-- [ ] T019 [US1] Integrate streamed text output with NestJS HTTP response handling in src/agents/controller/agents.controller.ts
-- [ ] T020 [US1] Run US1 unit and e2e tests until passing for src/agents/controller/agents.controller.spec.ts, src/agents/service/chat-agent/chat-agent.service.spec.ts, src/agents/service/generate-agent-response/generate-agent-response.service.spec.ts, and test/agents.e2e-spec.ts
+- [X] T015 [P] [US1] Implement ChatAgentDomainService owned-agent orchestration in src/agents/service/chat-agent/chat-agent.service.ts
+- [X] T016 [P] [US1] Implement GenerateOpenAiAgentResponseService instruction loading, ASCA_MODEL validation, OpenAI model creation, and text stream generation in src/agents/service/generate-agent-response/generate-agent-response.service.ts
+- [X] T017 [US1] Implement chat request DTO validation and mapping helpers in src/agents/controller/agent.dto.ts
+- [X] T018 [US1] Add authenticated POST /agents/:id/chat controller action that delegates to ChatAgentService in src/agents/controller/agents.controller.ts
+- [X] T019 [US1] Integrate streamed UI message output with NestJS HTTP response handling in src/agents/controller/agents.controller.ts
+- [X] T020 [US1] Run US1 unit and e2e tests until passing for src/agents/controller/agents.controller.spec.ts, src/agents/service/chat-agent/chat-agent.service.spec.ts, src/agents/service/generate-agent-response/generate-agent-response.service.spec.ts, and test/agents.e2e-spec.ts
 
 **Checkpoint**: User Story 1 is fully functional and independently testable as the MVP.
 
@@ -90,17 +90,17 @@
 
 > Write these tests FIRST and verify they FAIL for the expected missing validation behavior before implementation.
 
-- [ ] T021 [P] [US2] Add controller tests for missing input, empty string input, whitespace input, invalid message role, and empty message list in src/agents/controller/agents.controller.spec.ts
-- [ ] T022 [P] [US2] Add chat service tests proving invalid chat requests do not call GenerateAgentResponseService in src/agents/service/chat-agent/chat-agent.service.spec.ts
-- [ ] T023 [P] [US2] Add e2e tests for 400 responses on invalid chat payloads in test/agents.e2e-spec.ts
-- [ ] T024 [US2] Run US2 tests and verify they fail for missing validation behavior using src/agents/controller/agents.controller.spec.ts, src/agents/service/chat-agent/chat-agent.service.spec.ts, and test/agents.e2e-spec.ts
+- [X] T021 [P] [US2] Add controller tests for missing input, empty string input, whitespace input, invalid message role, and empty message list in src/agents/controller/agents.controller.spec.ts
+- [X] T022 [P] [US2] Add chat service tests proving invalid chat requests do not call GenerateAgentResponseService in src/agents/service/chat-agent/chat-agent.service.spec.ts
+- [X] T023 [P] [US2] Add e2e tests for 400 responses on invalid chat payloads in test/agents.e2e-spec.ts
+- [X] T024 [US2] Run US2 tests and verify they fail for missing validation behavior using src/agents/controller/agents.controller.spec.ts, src/agents/service/chat-agent/chat-agent.service.spec.ts, and test/agents.e2e-spec.ts
 
 ### Implementation for User Story 2
 
-- [ ] T025 [US2] Implement strict chat input validation and normalization in src/agents/controller/agent.dto.ts
-- [ ] T026 [US2] Add defensive invalid-request checks to ChatAgentDomainService before generation in src/agents/service/chat-agent/chat-agent.service.ts
-- [ ] T027 [US2] Ensure BadRequestException outcomes preserve existing agent data and skip response generation in src/agents/controller/agents.controller.ts
-- [ ] T028 [US2] Run US2 unit and e2e tests until passing for src/agents/controller/agents.controller.spec.ts, src/agents/service/chat-agent/chat-agent.service.spec.ts, and test/agents.e2e-spec.ts
+- [X] T025 [US2] Implement strict chat input validation and normalization in src/agents/controller/agent.dto.ts
+- [X] T026 [US2] Add defensive invalid-request checks to ChatAgentDomainService before generation in src/agents/service/chat-agent/chat-agent.service.ts
+- [X] T027 [US2] Ensure BadRequestException outcomes preserve existing agent data and skip response generation in src/agents/controller/agents.controller.ts
+- [X] T028 [US2] Run US2 unit and e2e tests until passing for src/agents/controller/agents.controller.spec.ts, src/agents/service/chat-agent/chat-agent.service.spec.ts, and test/agents.e2e-spec.ts
 
 **Checkpoint**: User Stories 1 and 2 both work independently.
 
@@ -116,19 +116,19 @@
 
 > Write these tests FIRST and verify they FAIL for the expected missing protection behavior before implementation.
 
-- [ ] T029 [P] [US3] Add controller tests for unauthenticated chat rejection before ChatAgentService calls in src/agents/controller/agents.controller.spec.ts
-- [ ] T030 [P] [US3] Add chat service tests for not-found and cross-owner forbidden outcomes before GenerateAgentResponseService calls in src/agents/service/chat-agent/chat-agent.service.spec.ts
-- [ ] T031 [P] [US3] Add response-generator tests for preserving existing developer messages and injecting role only when absent in src/agents/service/generate-agent-response/generate-agent-response.service.spec.ts
-- [ ] T032 [P] [US3] Add e2e tests for 401 missing token, 401 invalid token, 403 cross-owner chat, 404 unknown agent, and unchanged persisted agent data in test/agents.e2e-spec.ts
-- [ ] T033 [US3] Run US3 tests and verify they fail for missing access-protection or developer-message behavior using src/agents/controller/agents.controller.spec.ts, src/agents/service/chat-agent/chat-agent.service.spec.ts, src/agents/service/generate-agent-response/generate-agent-response.service.spec.ts, and test/agents.e2e-spec.ts
+- [X] T029 [P] [US3] Add controller tests for unauthenticated chat rejection before ChatAgentService calls in src/agents/controller/agents.controller.spec.ts
+- [X] T030 [P] [US3] Add chat service tests for not-found and cross-owner forbidden outcomes before GenerateAgentResponseService calls in src/agents/service/chat-agent/chat-agent.service.spec.ts
+- [X] T031 [P] [US3] Add response-generator tests for preserving existing developer messages and injecting role only when absent in src/agents/service/generate-agent-response/generate-agent-response.service.spec.ts
+- [X] T032 [P] [US3] Add e2e tests for 401 missing token, 401 invalid token, 403 cross-owner chat, 404 unknown agent, and unchanged persisted agent data in test/agents.e2e-spec.ts
+- [X] T033 [US3] Run US3 tests and verify they fail for missing access-protection or developer-message behavior using src/agents/controller/agents.controller.spec.ts, src/agents/service/chat-agent/chat-agent.service.spec.ts, src/agents/service/generate-agent-response/generate-agent-response.service.spec.ts, and test/agents.e2e-spec.ts
 
 ### Implementation for User Story 3
 
-- [ ] T034 [US3] Enforce NotFoundException and ForbiddenException ownership checks before generation in src/agents/service/chat-agent/chat-agent.service.ts
-- [ ] T035 [US3] Ensure POST /agents/:id/chat authenticates before DTO mapping and service calls in src/agents/controller/agents.controller.ts
-- [ ] T036 [US3] Implement developer-message preservation and role-injection rules in src/agents/service/generate-agent-response/generate-agent-response.service.ts
-- [ ] T037 [US3] Map response-provider configuration and stream failures to clear operational errors in src/agents/service/generate-agent-response/generate-agent-response.service.ts
-- [ ] T038 [US3] Run US3 unit and e2e tests until passing for src/agents/controller/agents.controller.spec.ts, src/agents/service/chat-agent/chat-agent.service.spec.ts, src/agents/service/generate-agent-response/generate-agent-response.service.spec.ts, and test/agents.e2e-spec.ts
+- [X] T034 [US3] Enforce NotFoundException and ForbiddenException ownership checks before generation in src/agents/service/chat-agent/chat-agent.service.ts
+- [X] T035 [US3] Ensure POST /agents/:id/chat authenticates before DTO mapping and service calls in src/agents/controller/agents.controller.ts
+- [X] T036 [US3] Implement developer-message preservation and role-injection rules in src/agents/service/generate-agent-response/generate-agent-response.service.ts
+- [X] T037 [US3] Map response-provider configuration and stream failures to clear operational errors in src/agents/service/generate-agent-response/generate-agent-response.service.ts
+- [X] T038 [US3] Run US3 unit and e2e tests until passing for src/agents/controller/agents.controller.spec.ts, src/agents/service/chat-agent/chat-agent.service.spec.ts, src/agents/service/generate-agent-response/generate-agent-response.service.spec.ts, and test/agents.e2e-spec.ts
 
 **Checkpoint**: All user stories are independently functional.
 
@@ -138,13 +138,13 @@
 
 **Purpose**: Final verification, documentation consistency, and quality gates across all stories.
 
-- [ ] T039 [P] Update quickstart validation notes with final streaming command behavior in specs/003-agent-chat/quickstart.md
-- [ ] T040 [P] Verify public doc comments and explicit types for new chat classes, interfaces, functions, constants, and parameters in src/agents/service/chat-agent/ and src/agents/service/generate-agent-response/
-- [ ] T041 Run npm run lint and fix lint findings in src/agents/controller/, src/agents/service/chat-agent/, src/agents/service/generate-agent-response/, and test/agents.e2e-spec.ts
-- [ ] T042 Run npm test and fix unit test regressions in src/agents/
-- [ ] T043 Run npm run test:e2e and fix end-to-end regressions in test/agents.e2e-spec.ts
-- [ ] T044 Run npm run test:cov and verify at least 80% coverage for new or modified chat behavior in src/agents/
-- [ ] T045 Execute the manual streaming check from specs/003-agent-chat/quickstart.md against POST /agents/{id}/chat
+- [X] T039 [P] Update quickstart validation notes with final streaming command behavior in specs/003-agent-chat/quickstart.md
+- [X] T040 [P] Verify public doc comments and explicit types for new chat classes, interfaces, functions, constants, and parameters in src/agents/service/chat-agent/ and src/agents/service/generate-agent-response/
+- [X] T041 Run npm run lint and fix lint findings in src/agents/controller/, src/agents/service/chat-agent/, src/agents/service/generate-agent-response/, and test/agents.e2e-spec.ts
+- [X] T042 Run npm test and fix unit test regressions in src/agents/
+- [X] T043 Run npm run test:e2e and fix end-to-end regressions in test/agents.e2e-spec.ts
+- [X] T044 Run npm run test:cov and verify at least 80% coverage for new or modified chat behavior in src/agents/
+- [X] T045 Execute the manual streaming check from specs/003-agent-chat/quickstart.md against POST /agents/{id}/chat
 
 ---
 

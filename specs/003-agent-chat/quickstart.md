@@ -13,7 +13,7 @@
 ## Expected Implementation Scope
 
 - `POST /agents/{id}/chat` accepts authenticated owner-only chat requests.
-- Successful chat returns a progressively streamed plain text response.
+- Successful chat returns a progressively streamed AI SDK UI message response for `@ai-sdk/react` `useChat`.
 - Missing or invalid authentication returns unauthorized before agent lookup or response generation.
 - Cross-owner chat returns forbidden before response generation.
 - Unknown agent ids return not found.
@@ -42,7 +42,7 @@
    - role instructions are not injected when a developer message already exists;
    - provider errors surface as clear operational failures.
 4. Add failing e2e tests in `test/agents.e2e-spec.ts` for:
-   - authenticated owner chat returns streamed text;
+   - authenticated owner chat returns a streamed AI SDK UI message response;
    - missing and invalid tokens return `401`;
    - cross-owner chat returns `403`;
    - unknown agent chat returns `404`;
@@ -63,7 +63,9 @@ npm run test:cov
 
 1. Start the service with valid `AUTH_SECRET`, `OPENAI_API_KEY`, `ASCA_MODEL`, and `DATABASE_URL`.
 2. Create or reuse an agent owned by the bearer token email.
-3. Send a chat request:
+3. Send a chat request. A successful response returns HTTP `200` with
+   `content-type: text/event-stream` and `x-vercel-ai-ui-message-stream: v1`,
+   which is the AI SDK UI message stream format consumed by `useChat`:
 
 ```bash
 curl -N \
@@ -71,6 +73,16 @@ curl -N \
   -H "Content-Type: application/json" \
   -X POST http://localhost:3000/agents/<agent-id>/chat \
   -d '{"input":"Hello, what can you help me do?"}'
+```
+
+For a conversation payload, send `input` as an ordered message array:
+
+```bash
+curl -N \
+  -H "Authorization: Bearer <token>" \
+  -H "Content-Type: application/json" \
+  -X POST http://localhost:3000/agents/<agent-id>/chat \
+  -d '{"input":[{"role":"developer","content":"Keep answers concise."},{"role":"user","content":"Summarize this project."}]}'
 ```
 
 ## Expected Outcomes

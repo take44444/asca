@@ -10,7 +10,10 @@ import {
   Patch,
   Post,
   Get,
+  Res,
 } from '@nestjs/common';
+import { ServerResponse } from 'node:http';
+import { Response } from 'express';
 import { AuthenticatedUser } from '../../auth/service/verify-auth-token/authenticated-user.model';
 import {
   VERIFY_AUTH_TOKEN_SERVICE,
@@ -27,11 +30,26 @@ import {
 } from '../service/manage-agents/agent.model';
 import {
   AgentDetailDto,
+  AgentChatMessageDto,
+  AgentChatRequestDto,
   AgentSummaryDto,
   CreatedAgentDto,
   CreateAgentDto,
   UpdateAgentDto,
 } from './agent.dto';
+import {
+  CHAT_AGENT_SERVICE,
+  ChatAgentService,
+} from '../service/chat-agent/chat-agent.service.interface';
+import {
+  ChatMessage,
+  ChatRequest,
+  ChatResponseStream,
+} from '../service/chat-agent/agent-chat.model';
+import {
+  AiSdkBindings,
+  loadAiSdk,
+} from '../service/generate-agent-response/ai-sdk.loader';
 
 /** Handles authenticated HTTP requests for user-owned agents. */
 @Controller('agents')
@@ -42,6 +60,8 @@ export class AgentsController {
     private readonly manageAgentsService: ManageAgentsService,
     @Inject(VERIFY_AUTH_TOKEN_SERVICE)
     private readonly verifyAuthTokenService: VerifyAuthTokenService,
+    @Inject(CHAT_AGENT_SERVICE)
+    private readonly chatAgentService: ChatAgentService,
   ) {}
 
   /** Creates an agent owned by the authenticated user. */
@@ -120,6 +140,34 @@ export class AgentsController {
     await this.manageAgentsService.delete(id, user);
   }
 
+  /** Chats with one owned agent and streams AI UI message output. */
+  @Post(':id/chat')
+  @HttpCode(200)
+  async chat(
+    @Headers('authorization') authorizationHeader: string | undefined,
+    @Param('id') id: string,
+    @Body() body: AgentChatRequestDto,
+    @Res() response: Response,
+  ): Promise<void> {
+    const user: AuthenticatedUser =
+      await this.authenticate(authorizationHeader);
+    const request: ChatRequest = {
+      agentId: id,
+      messages: this.getValidatedChatMessages(body),
+    };
+    const chatResponse: ChatResponseStream = await this.chatAgentService.chat(
+      request,
+      user,
+    );
+
+    const aiSdk: AiSdkBindings = await loadAiSdk();
+    aiSdk.pipeUIMessageStreamToResponse({
+      response: response as ServerResponse,
+      status: 200,
+      stream: chatResponse.uiMessageStream,
+    });
+  }
+
   private async authenticate(
     authorizationHeader: string | undefined,
   ): Promise<AuthenticatedUser> {
@@ -161,6 +209,57 @@ export class AgentsController {
     }
 
     return update;
+  }
+
+  private getValidatedChatMessages(
+    body: AgentChatRequestDto,
+  ): readonly ChatMessage[] {
+    const input: string | readonly AgentChatMessageDto[] | undefined =
+      body.input;
+    if (typeof input === 'string') {
+      const content: string = input.trim();
+      if (content === '') {
+        throw new BadRequestException();
+      }
+      return [{ role: 'user', content }];
+    }
+
+    if (!Array.isArray(input) || input.length === 0) {
+      throw new BadRequestException();
+    }
+
+    const messages: ChatMessage[] = input.map(
+      (message: AgentChatMessageDto): ChatMessage =>
+        this.getValidatedChatMessage(message),
+    );
+    const hasContent: boolean = messages.some(
+      (message: ChatMessage): boolean => message.content.trim() !== '',
+    );
+    if (!hasContent) {
+      throw new BadRequestException();
+    }
+
+    return messages;
+  }
+
+  private getValidatedChatMessage(message: AgentChatMessageDto): ChatMessage {
+    if (
+      !message ||
+      !['user', 'assistant', 'developer'].includes(message.role) ||
+      typeof message.content !== 'string'
+    ) {
+      throw new BadRequestException();
+    }
+
+    const content: string = message.content.trim();
+    if (message.role === 'user' && content === '') {
+      throw new BadRequestException();
+    }
+
+    return {
+      role: message.role,
+      content,
+    };
   }
 
   private toAgentDetailDto(agent: Agent): AgentDetailDto {

@@ -9,6 +9,31 @@ import { CreateAgentDto } from './agent.dto';
 import { VerifyAuthTokenService } from '../../auth/service/verify-auth-token/verify-auth-token.service.interface';
 import { ManageAgentsService } from '../service/manage-agents/manage-agents.service.interface';
 import { AuthenticatedUser } from '../../auth/service/verify-auth-token/authenticated-user.model';
+import { ChatAgentService } from '../service/chat-agent/chat-agent.service.interface';
+import { ChatResponseStream } from '../service/chat-agent/agent-chat.model';
+import { Response } from 'express';
+import { type UIMessageChunk } from 'ai';
+import { loadAiSdk } from '../service/generate-agent-response/ai-sdk.loader';
+
+jest.mock('../service/generate-agent-response/ai-sdk.loader', () => ({
+  loadAiSdk: jest.fn(),
+}));
+
+interface WritableResponseMock {
+  readonly setHeader: jest.Mock<void, [string, string]>;
+  readonly write: jest.Mock<void, [string]>;
+  readonly end: jest.Mock<void, []>;
+}
+
+const createUiMessageStream = (): ReadableStream<UIMessageChunk> =>
+  new ReadableStream<UIMessageChunk>({
+    start(controller: ReadableStreamDefaultController<UIMessageChunk>): void {
+      controller.enqueue({ type: 'text-start', id: '0' });
+      controller.enqueue({ type: 'text-delta', id: '0', delta: 'Hello' });
+      controller.enqueue({ type: 'text-end', id: '0' });
+      controller.close();
+    },
+  });
 
 describe('AgentsController', () => {
   const user: AuthenticatedUser = {
@@ -17,6 +42,8 @@ describe('AgentsController', () => {
   };
   let authService: jest.Mocked<VerifyAuthTokenService>;
   let manageAgentsService: jest.Mocked<ManageAgentsService>;
+  let chatAgentService: jest.Mocked<ChatAgentService>;
+  let pipeUIMessageStreamToResponse: jest.Mock<void, [unknown]>;
   let controller: AgentsController;
 
   beforeEach(() => {
@@ -33,7 +60,18 @@ describe('AgentsController', () => {
       get: jest.fn(),
       update: jest.fn(),
     };
-    controller = new AgentsController(manageAgentsService, authService);
+    chatAgentService = {
+      chat: jest.fn(),
+    };
+    pipeUIMessageStreamToResponse = jest.fn<void, [unknown]>();
+    jest.mocked(loadAiSdk).mockResolvedValue({
+      pipeUIMessageStreamToResponse,
+    } as unknown as Awaited<ReturnType<typeof loadAiSdk>>);
+    controller = new AgentsController(
+      manageAgentsService,
+      authService,
+      chatAgentService,
+    );
   });
 
   it.each([
@@ -48,6 +86,16 @@ describe('AgentsController', () => {
         }),
     ],
     ['delete', () => controller.delete(undefined, 'agent-1')],
+    [
+      'chat',
+      () =>
+        controller.chat(
+          undefined,
+          'agent-1',
+          { input: 'Hello' },
+          asResponse(mockResponse()),
+        ),
+    ],
   ])(
     'rejects unauthenticated %s before service calls',
     async (_name: string, act: () => Promise<unknown>) => {
@@ -61,6 +109,7 @@ describe('AgentsController', () => {
       expect(manageAgentsService.get.mock.calls).toHaveLength(0);
       expect(manageAgentsService.update.mock.calls).toHaveLength(0);
       expect(manageAgentsService.delete.mock.calls).toHaveLength(0);
+      expect(chatAgentService.chat.mock.calls).toHaveLength(0);
     },
   );
 
@@ -257,4 +306,111 @@ describe('AgentsController', () => {
       ).rejects.toBeInstanceOf(NotFoundException);
     },
   );
+
+  it('delegates single-message chat for an authenticated owner', async () => {
+    authService.verifyAuthorizationHeader.mockResolvedValue(user);
+    const uiMessageStream: ReadableStream<UIMessageChunk> =
+      createUiMessageStream();
+    const stream: ChatResponseStream = {
+      uiMessageStream,
+    };
+    chatAgentService.chat.mockResolvedValue(stream);
+    const response: WritableResponseMock = mockResponse();
+
+    await expect(
+      controller.chat(
+        'Bearer token',
+        'agent-1',
+        { input: ' Hello ' },
+        asResponse(response),
+      ),
+    ).resolves.toBeUndefined();
+
+    expect(chatAgentService.chat.mock.calls).toEqual([
+      [
+        {
+          agentId: 'agent-1',
+          messages: [{ role: 'user', content: 'Hello' }],
+        },
+        user,
+      ],
+    ]);
+    expect(pipeUIMessageStreamToResponse.mock.calls).toEqual([
+      [
+        {
+          response,
+          status: 200,
+          stream: uiMessageStream,
+        },
+      ],
+    ]);
+  });
+
+  it('delegates message-list chat for an authenticated owner', async () => {
+    authService.verifyAuthorizationHeader.mockResolvedValue(user);
+    chatAgentService.chat.mockResolvedValue({
+      uiMessageStream: createUiMessageStream(),
+    });
+    const response: WritableResponseMock = mockResponse();
+
+    await controller.chat(
+      'Bearer token',
+      'agent-1',
+      {
+        input: [
+          { role: 'developer', content: 'Keep it short.' },
+          { role: 'user', content: ' Hello ' },
+        ],
+      },
+      asResponse(response),
+    );
+
+    expect(chatAgentService.chat.mock.calls).toEqual([
+      [
+        {
+          agentId: 'agent-1',
+          messages: [
+            { role: 'developer', content: 'Keep it short.' },
+            { role: 'user', content: 'Hello' },
+          ],
+        },
+        user,
+      ],
+    ]);
+  });
+
+  it.each([
+    ['missing input', {}],
+    ['empty string input', { input: '' }],
+    ['whitespace input', { input: '   ' }],
+    ['invalid message role', { input: [{ role: 'system', content: 'Nope' }] }],
+    ['empty message list', { input: [] }],
+  ])(
+    'rejects chat with %s before service calls',
+    async (_caseName: string, body: object) => {
+      authService.verifyAuthorizationHeader.mockResolvedValue(user);
+
+      await expect(
+        controller.chat(
+          'Bearer token',
+          'agent-1',
+          body,
+          asResponse(mockResponse()),
+        ),
+      ).rejects.toBeInstanceOf(BadRequestException);
+      expect(chatAgentService.chat.mock.calls).toHaveLength(0);
+    },
+  );
 });
+
+function mockResponse(): WritableResponseMock {
+  return {
+    setHeader: jest.fn<void, [string, string]>(),
+    write: jest.fn<void, [string]>(),
+    end: jest.fn<void, []>(),
+  };
+}
+
+function asResponse(response: WritableResponseMock): Response {
+  return response as unknown as Response;
+}

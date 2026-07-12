@@ -36,11 +36,11 @@
 
 **Alternatives considered**: Treating developer guidance as ordinary user text was rejected because it would not satisfy the role-injection rule. Rejecting requests that include developer messages was rejected because the specification explicitly references developer messages.
 
-## Decision: Return plain streamed text for v1
+## Decision: Return AI SDK UI message streams for v1
 
-**Rationale**: The feature requires real-time agent response content, not a browser-specific chat protocol. A plain text stream is simple to validate with Supertest, works for generic HTTP clients, and avoids committing to a UI protocol before chat history or a frontend exists.
+**Rationale**: The frontend consumes the endpoint with `useChat` from `@ai-sdk/react`, so the backend should return the AI SDK UI message stream protocol instead of raw text chunks. The controller uses the AI SDK response helper so headers and serialization stay aligned with the installed AI SDK version.
 
-**Alternatives considered**: Server-sent events were rejected for v1 because no event metadata or resume behavior is in scope. AI SDK UI stream protocol was rejected because there is no UI client or message persistence requirement in this feature.
+**Alternatives considered**: A raw plain-text stream was rejected because it would require frontend adapter code around `useChat`. A hand-rolled Server-Sent Events serializer was rejected because `pipeUIMessageStreamToResponse` already defines the protocol expected by AI SDK clients.
 
 ## Decision: Do not persist chat history or generated responses
 
