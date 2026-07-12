@@ -6,6 +6,10 @@ import { PrismaAgentStoreRepository } from './repository/agent-store/prisma-agen
 import { AGENT_STORE_REPOSITORY } from './repository/agent-store/agent-store.repository.interface';
 import { ManageAgentsDomainService } from './service/manage-agents/manage-agents.service';
 import { MANAGE_AGENTS_SERVICE } from './service/manage-agents/manage-agents.service.interface';
+import { ChatAgentDomainService } from './service/chat-agent/chat-agent.service';
+import { CHAT_AGENT_SERVICE } from './service/chat-agent/chat-agent.service.interface';
+import { GenerateOpenAiAgentResponseService } from './service/generate-agent-response/generate-agent-response.service';
+import { GENERATE_AGENT_RESPONSE_SERVICE } from './service/generate-agent-response/generate-agent-response.service.interface';
 
 /** Provides authenticated agent-management HTTP behavior. */
 @Module({
@@ -14,6 +18,8 @@ import { MANAGE_AGENTS_SERVICE } from './service/manage-agents/manage-agents.ser
   providers: [
     PrismaAgentStoreRepository,
     ManageAgentsDomainService,
+    ChatAgentDomainService,
+    GenerateOpenAiAgentResponseService,
     {
       provide: AGENT_STORE_REPOSITORY,
       useExisting: PrismaAgentStoreRepository,
@@ -21,6 +27,14 @@ import { MANAGE_AGENTS_SERVICE } from './service/manage-agents/manage-agents.ser
     {
       provide: MANAGE_AGENTS_SERVICE,
       useExisting: ManageAgentsDomainService,
+    },
+    {
+      provide: CHAT_AGENT_SERVICE,
+      useExisting: ChatAgentDomainService,
+    },
+    {
+      provide: GENERATE_AGENT_RESPONSE_SERVICE,
+      useExisting: GenerateOpenAiAgentResponseService,
     },
   ],
 })

@@ -1,5 +1,16 @@
 import { Transform } from 'class-transformer';
-import { IsOptional, IsString, MinLength } from 'class-validator';
+import {
+  Allow,
+  IsArray,
+  IsIn,
+  IsOptional,
+  IsString,
+  MinLength,
+  ValidateNested,
+} from 'class-validator';
+
+/** Valid HTTP chat message roles. */
+export type AgentChatMessageRoleDto = 'user' | 'assistant' | 'system';
 
 /** Request body for creating a user-owned agent. */
 export class CreateAgentDto {
@@ -28,6 +39,33 @@ export class UpdateAgentDto {
   @IsString()
   readonly role?: string;
 }
+
+/** Request message item for chatting with an agent. */
+export class AgentChatMessageDto {
+  /** Role for the submitted chat message. */
+  @IsIn(['user', 'assistant', 'system'])
+  readonly role!: AgentChatMessageRoleDto;
+
+  /** Text content for the submitted chat message. */
+  @IsString()
+  readonly content!: string;
+}
+
+/** Request body for chatting with an owned agent. */
+export class AgentChatRequestDto {
+  /** Single user message or ordered conversation messages. */
+  @Allow()
+  readonly input?: string | readonly AgentChatMessageDto[];
+
+  /** Ordered conversation messages for validation metadata when input is an array. */
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  readonly messages?: readonly AgentChatMessageDto[];
+}
+
+/** HTTP response typing for streamed agent chat output. */
+export type AgentChatResponseDto = ReadableStream;
 
 /** HTTP response for a newly created agent. */
 export interface CreatedAgentDto {
