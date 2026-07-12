@@ -141,7 +141,8 @@ describe('AgentsController (e2e)', () => {
     }
     expect(typeof responseBody.id).toBe('string');
     expect(responseBody.name).toBe('Support Agent');
-    expect(responseBody.author).toBe('user@example.com');
+    expect(responseBody).not.toHaveProperty('author');
+    expect(responseBody).not.toHaveProperty('role');
   });
 
   it.each([{}, { name: '' }, { name: '   ' }])(
@@ -185,6 +186,7 @@ describe('AgentsController (e2e)', () => {
     }
     expect(typeof firstAgent.id).toBe('string');
     expect(firstAgent.name).toBe('User Agent');
+    expect(firstAgent).not.toHaveProperty('author');
     expect(firstAgent).not.toHaveProperty('role');
   });
 

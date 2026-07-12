@@ -25,24 +25,24 @@ describe('PrismaAgentStoreRepository', () => {
     await prismaService.$disconnect();
   });
 
-  it('persists id, name, and author email', async () => {
+  it('returns only id and name after create', async () => {
     const agent = await repository.create('Support Agent', 'user@example.com');
 
-    expect(agent.id).toEqual(expect.any(String));
+    expect(typeof agent.id).toBe('string');
     expect(agent.name).toBe('Support Agent');
-    expect(agent.author).toBe('user@example.com');
-    expect(agent.role).toBeNull();
+    expect(agent).not.toHaveProperty('author');
+    expect(agent).not.toHaveProperty('role');
   });
 
   it('lists only agents for the requested author', async () => {
     await repository.create('User Agent', 'user@example.com');
     await repository.create('Other Agent', 'other@example.com');
 
-    await expect(
-      repository.listByAuthor('user@example.com'),
-    ).resolves.toMatchObject([
-      { name: 'User Agent', author: 'user@example.com', role: null },
-    ]);
+    const agents = await repository.listByAuthor('user@example.com');
+
+    expect(agents).toHaveLength(1);
+    expect(typeof agents[0]?.id).toBe('string');
+    expect(agents[0]?.name).toBe('User Agent');
   });
 
   it('finds an agent by id with role data', async () => {
@@ -120,14 +120,10 @@ describe('PrismaAgentStoreRepository', () => {
       {
         id: firstAgent.id,
         name: 'First Agent',
-        author: 'user@example.com',
-        role: 'First role.',
       },
       {
         id: secondAgent.id,
         name: 'Second Agent',
-        author: 'user@example.com',
-        role: null,
       },
     ].sort(
       (left: { readonly id: string }, right: { readonly id: string }): number =>

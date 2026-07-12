@@ -69,8 +69,6 @@ describe('AgentsController', () => {
     manageAgentsService.create.mockResolvedValue({
       id: 'agent-1',
       name: 'Support Agent',
-      author: user.email,
-      role: '',
     });
 
     await expect(
@@ -78,7 +76,6 @@ describe('AgentsController', () => {
     ).resolves.toEqual({
       id: 'agent-1',
       name: 'Support Agent',
-      author: user.email,
     });
     expect(manageAgentsService.create.mock.calls).toEqual([
       ['Support Agent', user],

@@ -4,7 +4,7 @@ import { Agent, AgentSummary, UpdateAgent } from './agent.model';
 /** Manages user-owned agents. */
 export interface ManageAgentsService {
   /** Creates an agent owned by the authenticated user. */
-  create(name: string, user: AuthenticatedUser): Promise<Agent>;
+  create(name: string, user: AuthenticatedUser): Promise<AgentSummary>;
 
   /** Lists agents owned by the authenticated user. */
   list(user: AuthenticatedUser): Promise<readonly AgentSummary[]>;

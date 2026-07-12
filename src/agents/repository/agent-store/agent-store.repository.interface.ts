@@ -1,22 +1,22 @@
-import { AgentDao, AgentUpdateDao } from './agent.dao';
+import { AgentDetailDao, AgentSummaryDao, AgentUpdateDao } from './agent.dao';
 
 /** Stores and retrieves user-owned agents. */
 export interface AgentStoreRepository {
   /** Persists an agent for the supplied owner email. */
-  create(name: string, author: string): Promise<AgentDao>;
+  create(name: string, author: string): Promise<AgentSummaryDao>;
 
   /** Lists all agents owned by the supplied owner email. */
-  listByAuthor(author: string): Promise<readonly AgentDao[]>;
+  listByAuthor(author: string): Promise<readonly AgentSummaryDao[]>;
 
   /** Finds one agent by its unique identifier. */
-  findById(id: string): Promise<AgentDao | null>;
+  findById(id: string): Promise<AgentDetailDao | null>;
 
   /** Updates an agent only when its id and owner email both match. */
   updateByIdAndAuthor(
     id: string,
     author: string,
     update: AgentUpdateDao,
-  ): Promise<AgentDao | null>;
+  ): Promise<AgentDetailDao | null>;
 
   /** Deletes an agent only when its id and owner email both match. */
   deleteByIdAndAuthor(id: string, author: string): Promise<boolean>;

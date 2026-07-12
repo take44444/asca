@@ -53,11 +53,13 @@ export class AgentsController {
     const user: AuthenticatedUser =
       await this.authenticate(authorizationHeader);
     const name: string = this.getValidatedName(body);
-    const agent: Agent = await this.manageAgentsService.create(name, user);
+    const agent: AgentSummary = await this.manageAgentsService.create(
+      name,
+      user,
+    );
     return {
       id: agent.id,
       name: agent.name,
-      author: agent.author,
     };
   }
 

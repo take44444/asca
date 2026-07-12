@@ -1,11 +1,14 @@
-/** Persistence representation for an agent row. */
-export interface AgentDao {
+/** Persistence representation for agent summary rows. */
+export interface AgentSummaryDao {
   /** Unique immutable agent identifier. */
   readonly id: string;
 
   /** Stored user-visible agent name. */
   readonly name: string;
+}
 
+/** Persistence representation for agent detail rows. */
+export interface AgentDetailDao extends AgentSummaryDao {
   /** Stored owner email address. */
   readonly author: string;
 

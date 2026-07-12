@@ -30,15 +30,11 @@ describe('ManageAgentsDomainService', () => {
     repository.create.mockResolvedValue({
       id: 'agent-1',
       name: 'Support Agent',
-      author: user.email,
-      role: null,
     });
 
     await expect(service.create('  Support Agent  ', user)).resolves.toEqual({
       id: 'agent-1',
       name: 'Support Agent',
-      author: user.email,
-      role: '',
     });
     expect(repository.create.mock.calls).toEqual([
       ['Support Agent', user.email],
@@ -57,8 +53,6 @@ describe('ManageAgentsDomainService', () => {
       {
         id: 'agent-1',
         name: 'Support Agent',
-        author: user.email,
-        role: 'Answer support questions.',
       },
     ]);
 

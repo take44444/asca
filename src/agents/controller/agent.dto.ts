@@ -36,9 +36,6 @@ export interface CreatedAgentDto {
 
   /** User-visible agent name. */
   readonly name: string;
-
-  /** Authenticated owner email address. */
-  readonly author: string;
 }
 
 /** HTTP response for one agent with customization details. */
