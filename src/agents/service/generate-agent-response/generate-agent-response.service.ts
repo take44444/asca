@@ -84,12 +84,12 @@ export class GenerateOpenAiAgentResponseService implements GenerateAgentResponse
     const messages: ModelMessage[] = request.messages.map(
       (message: ChatMessage): ModelMessage => this.toModelMessage(message),
     );
-    const hasDeveloperMessage: boolean = request.messages.some(
-      (message: ChatMessage): boolean => message.role === 'developer',
+    const hasSystemMessage: boolean = request.messages.some(
+      (message: ChatMessage): boolean => message.role === 'system',
     );
     const trimmedRole: string = request.agentRole.trim();
 
-    if (!hasDeveloperMessage && trimmedRole !== '') {
+    if (!hasSystemMessage && trimmedRole !== '') {
       return [{ role: 'system', content: trimmedRole }, ...messages];
     }
 
@@ -97,9 +97,6 @@ export class GenerateOpenAiAgentResponseService implements GenerateAgentResponse
   }
 
   private toModelMessage(message: ChatMessage): ModelMessage {
-    if (message.role === 'developer') {
-      return { role: 'system', content: message.content };
-    }
     return {
       role: message.role,
       content: message.content,

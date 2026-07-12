@@ -30,11 +30,11 @@
 
 **Alternatives considered**: Hardcoding the instruction in TypeScript was rejected by the input requirements. Storing it in the database was rejected because this feature has one static base instruction and no administrative editing requirement.
 
-## Decision: Preserve a domain-level developer-message concept and adapt it at the generator boundary
+## Decision: Use system messages for instruction-level chat guidance
 
-**Rationale**: The public chat contract needs to detect submitted developer messages so agent role instructions are only injected when none are present. The response-generation boundary can translate the domain messages into the AI SDK/OpenAI shape and use provider-specific instruction handling where needed, while the rest of the application works with stable domain roles.
+**Rationale**: The installed AI SDK `ModelMessage` contract supports `system`, `user`, `assistant`, and `tool` roles, but not a `developer` role. The public chat contract therefore accepts `system` messages for caller-supplied instruction guidance, and agent role instructions are injected only when no system message is already present.
 
-**Alternatives considered**: Treating developer guidance as ordinary user text was rejected because it would not satisfy the role-injection rule. Rejecting requests that include developer messages was rejected because the specification explicitly references developer messages.
+**Alternatives considered**: Accepting `developer` and translating it to `system` at the generator boundary was rejected because it exposes a role the provider contract does not support. Treating instruction guidance as ordinary user text was rejected because it would not satisfy the role-injection rule.
 
 ## Decision: Return AI SDK UI message streams for v1
 

@@ -19,7 +19,7 @@
 - Unknown agent ids return not found.
 - Missing, empty, or whitespace-only input returns bad request.
 - The base A.S.C.A. instruction is loaded from `src/agents/service/generate-agent-response/instructions.md`.
-- Agent role instructions are injected only when the submitted message list has no developer message.
+- Agent role instructions are injected only when the submitted message list has no system message.
 - Chat history is not stored.
 
 ## Test-First Validation Flow
@@ -38,8 +38,8 @@
 3. Add failing response-generator tests in `src/agents/service/generate-agent-response/generate-agent-response.service.spec.ts` for:
    - base instruction content is loaded from `instructions.md`;
    - configured model is required;
-   - role instructions are injected when no developer message exists;
-   - role instructions are not injected when a developer message already exists;
+  - role instructions are injected when no system message exists;
+  - role instructions are not injected when a system message already exists;
    - provider errors surface as clear operational failures.
 4. Add failing e2e tests in `test/agents.e2e-spec.ts` for:
    - authenticated owner chat returns a streamed AI SDK UI message response;
@@ -82,7 +82,7 @@ curl -N \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -X POST http://localhost:3000/agents/<agent-id>/chat \
-  -d '{"input":[{"role":"developer","content":"Keep answers concise."},{"role":"user","content":"Summarize this project."}]}'
+  -d '{"input":[{"role":"system","content":"Keep answers concise."},{"role":"user","content":"Summarize this project."}]}'
 ```
 
 ## Expected Outcomes

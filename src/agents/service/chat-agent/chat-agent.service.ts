@@ -64,7 +64,7 @@ export class ChatAgentDomainService implements ChatAgentService {
 
     for (const message of messages) {
       if (
-        !['user', 'assistant', 'developer'].includes(message.role) ||
+        !['user', 'assistant', 'system'].includes(message.role) ||
         typeof message.content !== 'string'
       ) {
         throw new BadRequestException();

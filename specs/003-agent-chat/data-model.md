@@ -20,7 +20,7 @@ Represents a configurable agent owned by one authenticated user.
 
 - `id` must identify exactly one agent for chat to proceed.
 - `author` must match the authenticated user's email before response generation begins.
-- `role` may be empty or absent; absent role content means no agent-specific developer guidance is injected.
+- `role` may be empty or absent; absent role content means no agent-specific system guidance is injected.
 
 ### State Transitions
 
@@ -66,8 +66,8 @@ Represents the submitted request to converse with an agent.
 - `input` is required.
 - A single-message `input` must be a non-empty string after trimming.
 - A message-list `input` must include at least one message with non-empty text content.
-- Accepted message roles are `user`, `assistant`, and `developer`.
-- A message-list is considered to contain developer guidance when at least one message has role `developer`.
+- Accepted message roles are `user`, `assistant`, and `system`.
+- A message-list is considered to contain system guidance when at least one message has role `system`.
 
 ### State Transitions
 
@@ -82,20 +82,20 @@ Represents one item in a submitted conversation.
 
 ### Fields
 
-- `role`: Message role: `user`, `assistant`, or `developer`.
+- `role`: Message role: `user`, `assistant`, or `system`.
 - `content`: Message text.
 
 ### Relationships
 
 - Belongs to one `Chat Request`.
-- Developer-role messages suppress automatic role injection.
+- System-role messages suppress automatic role injection.
 
 ### Validation Rules
 
 - `role` must be one of the accepted roles.
 - `content` must be a string.
 - User message content must contain non-whitespace text.
-- Assistant and developer message content must be text when provided.
+- Assistant and system message content must be text when provided.
 
 ## Instruction Content
 
@@ -109,7 +109,7 @@ Represents guidance used during response generation.
 ### Relationships
 
 - Base instruction applies to every accepted chat request.
-- Agent role instruction applies only when the authorized agent has role content and the submitted conversation has no developer message.
+- Agent role instruction applies only when the authorized agent has role content and the submitted conversation has no system message.
 
 ### Validation Rules
 

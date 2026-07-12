@@ -489,7 +489,10 @@ describe('AgentsController (e2e)', () => {
     ['missing input', {}],
     ['empty string input', { input: '' }],
     ['whitespace input', { input: '   ' }],
-    ['invalid message role', { input: [{ role: 'system', content: 'Nope' }] }],
+    [
+      'invalid message role',
+      { input: [{ role: 'developer', content: 'Nope' }] },
+    ],
     ['empty message list', { input: [] }],
   ])(
     'returns 400 for chat with %s',

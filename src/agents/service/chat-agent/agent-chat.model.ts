@@ -1,7 +1,7 @@
 import { type UIMessageChunk } from 'ai';
 
 /** Chat message roles accepted by the agent chat domain. */
-export type ChatMessageRole = 'user' | 'assistant' | 'developer';
+export type ChatMessageRole = 'user' | 'assistant' | 'system';
 
 /** One normalized message submitted to an agent chat request. */
 export interface ChatMessage {

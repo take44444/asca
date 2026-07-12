@@ -122,11 +122,11 @@ describe('GenerateOpenAiAgentResponseService', () => {
     ).rejects.toBeInstanceOf(BadGatewayException);
   });
 
-  it('preserves developer messages and skips automatic role injection', async () => {
+  it('preserves system messages and skips automatic role injection', async () => {
     await service.generate({
       agentRole: 'Answer support questions.',
       messages: [
-        { role: 'developer', content: 'Keep answers concise.' },
+        { role: 'system', content: 'Keep answers concise.' },
         { role: 'user', content: 'Hello' },
       ],
     });

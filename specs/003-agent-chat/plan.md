@@ -6,7 +6,7 @@
 
 ## Summary
 
-Add authenticated owner-only agent chat through `POST /agents/{id}/chat`, returning streamed model output for valid requests. Extend the existing NestJS `agents` module in place: add chat DTOs and controller action, add a `chat-agent` domain service that reuses the agent repository for existence and owner checks, isolate AI SDK/OpenAI response generation behind a service abstraction, load the base A.S.C.A. instruction from `instructions.md`, inject agent role guidance only when no developer message is already supplied, and keep chat history persistence out of scope.
+Add authenticated owner-only agent chat through `POST /agents/{id}/chat`, returning streamed model output for valid requests. Extend the existing NestJS `agents` module in place: add chat DTOs and controller action, add a `chat-agent` domain service that reuses the agent repository for existence and owner checks, isolate AI SDK/OpenAI response generation behind a service abstraction, load the base A.S.C.A. instruction from `instructions.md`, inject agent role guidance only when no system message is already supplied, and keep chat history persistence out of scope.
 
 ## Technical Context
 
@@ -33,7 +33,7 @@ Add authenticated owner-only agent chat through `POST /agents/{id}/chat`, return
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
 - **Clean Architecture**: PASS. HTTP concerns remain in `src/agents/controller/`; owner checks and chat orchestration live in `src/agents/service/chat-agent/`; existing agent persistence remains behind `src/agents/repository/agent-store/`; AI SDK/OpenAI calls are isolated behind a response-generation abstraction under `src/agents/service/generate-agent-response/`. Services depend on repository and generator interfaces plus domain models, not DTOs, DAOs, concrete Prisma classes, or concrete provider calls.
-- **Test-Driven Development**: PASS. Tasks must add failing controller, service, response-generator, and e2e tests before implementation for successful streamed chat, invalid input, missing/invalid authentication, cross-owner forbidden access, not-found access, role injection, developer-message preservation, provider failure, and no chat-history persistence.
+- **Test-Driven Development**: PASS. Tasks must add failing controller, service, response-generator, and e2e tests before implementation for successful streamed chat, invalid input, missing/invalid authentication, cross-owner forbidden access, not-found access, role injection, system-message preservation, provider failure, and no chat-history persistence.
 - **Quality Gates**: PASS. Verification will run `npm run lint`, `npm test`, `npm run test:e2e`, and `npm run test:cov`; changed agent chat behavior must meet or exceed 80% coverage.
 - **Technical Constraints**: PASS. The plan uses TypeScript/NestJS, `class-validator`, Prisma, SQLite for dev/test, `@nestjs/jwt` authentication, `@nestjs/testing`, explicit public contracts, no `any`, and doc comments on public classes/interfaces/functions. AI SDK integration is added as a provider-side dependency behind a service boundary.
 - **Project Structure**: PASS. All feature components map to the existing `src/agents/` module and preserve controller, service, and repository subdirectories. Shared auth and Prisma infrastructure remain unchanged.
@@ -91,7 +91,7 @@ test/
 └── agents.e2e-spec.ts
 ```
 
-**Structure Decision**: Continue using the existing `src/agents/` module. Add chat request/response DTOs in `controller/agent.dto.ts` and a `POST /agents/{id}/chat` action in `AgentsController`. Add a new `chat-agent` service capability for authenticated owner-only chat orchestration. Reuse `AgentStoreRepository.findById` for not-found and forbidden decisions, and add no new persistence methods because chat history is out of scope. Add a `generate-agent-response` service capability for instruction loading, role/developer-message preparation, AI SDK/OpenAI configuration, and stream creation. Register both service abstractions in `agents.module.ts`.
+**Structure Decision**: Continue using the existing `src/agents/` module. Add chat request/response DTOs in `controller/agent.dto.ts` and a `POST /agents/{id}/chat` action in `AgentsController`. Add a new `chat-agent` service capability for authenticated owner-only chat orchestration. Reuse `AgentStoreRepository.findById` for not-found and forbidden decisions, and add no new persistence methods because chat history is out of scope. Add a `generate-agent-response` service capability for instruction loading, role/system-message preparation, AI SDK/OpenAI configuration, and stream creation. Register both service abstractions in `agents.module.ts`.
 
 ## Phase 0: Research Summary
 

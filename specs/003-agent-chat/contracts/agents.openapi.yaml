@@ -131,10 +131,10 @@ paths:
                 value:
                   input: Hello, what can you help me do?
               conversation:
-                summary: Conversation with developer guidance
+                summary: Conversation with system guidance
                 value:
                   input:
-                    - role: developer
+                    - role: system
                       content: Keep answers concise.
                     - role: user
                       content: Summarize this project.
@@ -225,7 +225,7 @@ components:
           enum:
             - user
             - assistant
-            - developer
+            - system
         content:
           type: string
           description: Message text. User messages must not be whitespace-only.

@@ -22,7 +22,7 @@ As an authenticated user, I want to send a message to an agent I created and rec
 
 1. **Given** an authenticated user owns an existing agent, **When** the user sends a non-empty chat message to that agent, **Then** the system returns an agent response as a stream.
 2. **Given** an authenticated user owns an existing agent, **When** the user sends multiple conversation messages, **Then** the system uses the provided conversation as the basis for the streamed response.
-3. **Given** an authenticated user owns an existing agent with role instructions and the submitted conversation has no developer guidance, **When** the user sends a chat message, **Then** the system includes the agent's role instructions before producing the response.
+3. **Given** an authenticated user owns an existing agent with role instructions and the submitted conversation has no system guidance, **When** the user sends a chat message, **Then** the system includes the agent's role instructions before producing the response.
 
 ---
 
@@ -61,7 +61,7 @@ As an agent author, I want only my account to chat with my agents so that privat
 - Requests for agents owned by another user are rejected and no response generation is started.
 - Requests for unknown agent identifiers report that the agent was not found.
 - Chat requests with missing, empty, or whitespace-only user input are rejected before response generation.
-- If an agent has role instructions and the submitted conversation already contains developer guidance, the system preserves the submitted developer guidance and does not inject duplicate role instructions.
+- If an agent has role instructions and the submitted conversation already contains system guidance, the system preserves the submitted system guidance and does not inject duplicate role instructions.
 - If an agent has no role instructions, the system proceeds with the base agent instruction only.
 - If the response provider cannot produce a response, the user receives a clear failure outcome without storing chat history.
 
@@ -81,8 +81,8 @@ As an agent author, I want only my account to chat with my agents so that privat
 - **FR-010**: Chat requests MUST report not found when no agent exists for the requested identifier.
 - **FR-011**: Chat response generation MUST include the base A.S.C.A. instruction: "You are A.S.C.A., an autonomous agent that can perform tasks on behalf of the user."
 - **FR-012**: The base A.S.C.A. instruction MUST be maintained as separately managed instruction content so it can grow without changing the public chat behavior.
-- **FR-013**: If an owned agent has role instructions and the submitted conversation contains no developer guidance, chat response generation MUST include the agent role instructions as the first developer guidance in the conversation.
-- **FR-014**: If the submitted conversation already contains developer guidance, chat response generation MUST NOT inject the agent role instructions as an additional developer message.
+- **FR-013**: If an owned agent has role instructions and the submitted conversation contains no system guidance, chat response generation MUST include the agent role instructions as the first system message in the conversation.
+- **FR-014**: If the submitted conversation already contains system guidance, chat response generation MUST NOT inject the agent role instructions as an additional system message.
 - **FR-015**: Agent chat MUST NOT store chat history as part of this feature.
 - **FR-016**: Agent chat MUST use the configured response-generation provider and configured model for response generation.
 - **FR-017**: Missing or unusable response-generation configuration MUST produce a clear operational failure outcome without bypassing authentication or authorization.
@@ -90,7 +90,7 @@ As an agent author, I want only my account to chat with my agents so that privat
 ### Architecture and Quality Requirements *(mandatory)*
 
 - **AQ-001**: The feature plan MUST define the controller, service/domain, repository, and response-generation responsibilities affected by authenticated agent chat, owner authorization, streaming responses, base instructions, and role instruction injection.
-- **AQ-002**: The feature plan MUST define independently testable behavior for authentication rejection, owner authorization, not-found handling, invalid input, successful streamed chat, role instruction injection, developer-guidance preservation, and response-provider failure so tests can be written and observed failing before implementation.
+- **AQ-002**: The feature plan MUST define independently testable behavior for authentication rejection, owner authorization, not-found handling, invalid input, successful streamed chat, role instruction injection, system-guidance preservation, and response-provider failure so tests can be written and observed failing before implementation.
 - **AQ-003**: The feature plan MUST identify validation, authentication, authorization, response-generation configuration, instruction content management, and public API documentation obligations introduced or changed by this feature.
 - **AQ-004**: The feature plan MUST define measurable quality verification, including lint, passing tests, and at least 80% coverage for new or modified behavior.
 
@@ -109,8 +109,8 @@ As an agent author, I want only my account to chat with my agents so that privat
 - **SC-001**: 100% of valid owner chat requests for existing agents begin returning generated response content as a stream.
 - **SC-002**: 100% of missing-token, invalid-token, and cross-owner chat attempts are rejected before response generation begins.
 - **SC-003**: 100% of chat requests with missing, empty, or whitespace-only input are rejected with a clear client-error outcome.
-- **SC-004**: 100% of chat requests for agents with role instructions and no submitted developer guidance include those role instructions before generating a response.
-- **SC-005**: 100% of chat requests that already include developer guidance preserve the submitted developer guidance without adding duplicate agent role instructions.
+- **SC-004**: 100% of chat requests for agents with role instructions and no submitted system guidance include those role instructions before generating a response.
+- **SC-005**: 100% of chat requests that already include system guidance preserve the submitted system guidance without adding duplicate agent role instructions.
 - **SC-006**: 95% of accepted chat requests begin streaming visible response content within 3 seconds in the standard development and test environment, excluding response-provider outages.
 
 ## Assumptions

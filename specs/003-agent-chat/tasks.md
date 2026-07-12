@@ -118,15 +118,15 @@
 
 - [X] T029 [P] [US3] Add controller tests for unauthenticated chat rejection before ChatAgentService calls in src/agents/controller/agents.controller.spec.ts
 - [X] T030 [P] [US3] Add chat service tests for not-found and cross-owner forbidden outcomes before GenerateAgentResponseService calls in src/agents/service/chat-agent/chat-agent.service.spec.ts
-- [X] T031 [P] [US3] Add response-generator tests for preserving existing developer messages and injecting role only when absent in src/agents/service/generate-agent-response/generate-agent-response.service.spec.ts
+- [X] T031 [P] [US3] Add response-generator tests for preserving existing system messages and injecting role only when absent in src/agents/service/generate-agent-response/generate-agent-response.service.spec.ts
 - [X] T032 [P] [US3] Add e2e tests for 401 missing token, 401 invalid token, 403 cross-owner chat, 404 unknown agent, and unchanged persisted agent data in test/agents.e2e-spec.ts
-- [X] T033 [US3] Run US3 tests and verify they fail for missing access-protection or developer-message behavior using src/agents/controller/agents.controller.spec.ts, src/agents/service/chat-agent/chat-agent.service.spec.ts, src/agents/service/generate-agent-response/generate-agent-response.service.spec.ts, and test/agents.e2e-spec.ts
+- [X] T033 [US3] Run US3 tests and verify they fail for missing access-protection or system-message behavior using src/agents/controller/agents.controller.spec.ts, src/agents/service/chat-agent/chat-agent.service.spec.ts, src/agents/service/generate-agent-response/generate-agent-response.service.spec.ts, and test/agents.e2e-spec.ts
 
 ### Implementation for User Story 3
 
 - [X] T034 [US3] Enforce NotFoundException and ForbiddenException ownership checks before generation in src/agents/service/chat-agent/chat-agent.service.ts
 - [X] T035 [US3] Ensure POST /agents/:id/chat authenticates before DTO mapping and service calls in src/agents/controller/agents.controller.ts
-- [X] T036 [US3] Implement developer-message preservation and role-injection rules in src/agents/service/generate-agent-response/generate-agent-response.service.ts
+- [X] T036 [US3] Implement system-message preservation and role-injection rules in src/agents/service/generate-agent-response/generate-agent-response.service.ts
 - [X] T037 [US3] Map response-provider configuration and stream failures to clear operational errors in src/agents/service/generate-agent-response/generate-agent-response.service.ts
 - [X] T038 [US3] Run US3 unit and e2e tests until passing for src/agents/controller/agents.controller.spec.ts, src/agents/service/chat-agent/chat-agent.service.spec.ts, src/agents/service/generate-agent-response/generate-agent-response.service.spec.ts, and test/agents.e2e-spec.ts
 
@@ -211,7 +211,7 @@ Task: "T023 [US2] Add invalid payload e2e tests in test/agents.e2e-spec.ts"
 ```bash
 Task: "T029 [US3] Add unauthenticated controller tests in src/agents/controller/agents.controller.spec.ts"
 Task: "T030 [US3] Add not-found and forbidden service tests in src/agents/service/chat-agent/chat-agent.service.spec.ts"
-Task: "T031 [US3] Add developer-message response-generator tests in src/agents/service/generate-agent-response/generate-agent-response.service.spec.ts"
+Task: "T031 [US3] Add system-message response-generator tests in src/agents/service/generate-agent-response/generate-agent-response.service.spec.ts"
 Task: "T032 [US3] Add auth and owner e2e tests in test/agents.e2e-spec.ts"
 ```
 
@@ -232,7 +232,7 @@ Task: "T032 [US3] Add auth and owner e2e tests in test/agents.e2e-spec.ts"
 1. Complete Setup + Foundational.
 2. Add US1 for valid owner chat streaming.
 3. Add US2 for invalid request handling.
-4. Add US3 for authentication, authorization, not-found, and developer-message protection.
+4. Add US3 for authentication, authorization, not-found, and system-message protection.
 5. Run polish verification across lint, unit, e2e, coverage, and manual streaming check.
 
 ### Parallel Team Strategy

@@ -358,7 +358,7 @@ describe('AgentsController', () => {
       'agent-1',
       {
         input: [
-          { role: 'developer', content: 'Keep it short.' },
+          { role: 'system', content: 'Keep it short.' },
           { role: 'user', content: ' Hello ' },
         ],
       },
@@ -370,7 +370,7 @@ describe('AgentsController', () => {
         {
           agentId: 'agent-1',
           messages: [
-            { role: 'developer', content: 'Keep it short.' },
+            { role: 'system', content: 'Keep it short.' },
             { role: 'user', content: 'Hello' },
           ],
         },
@@ -383,7 +383,10 @@ describe('AgentsController', () => {
     ['missing input', {}],
     ['empty string input', { input: '' }],
     ['whitespace input', { input: '   ' }],
-    ['invalid message role', { input: [{ role: 'system', content: 'Nope' }] }],
+    [
+      'invalid message role',
+      { input: [{ role: 'developer', content: 'Nope' }] },
+    ],
     ['empty message list', { input: [] }],
   ])(
     'rejects chat with %s before service calls',

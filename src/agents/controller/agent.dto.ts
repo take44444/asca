@@ -10,7 +10,7 @@ import {
 } from 'class-validator';
 
 /** Valid HTTP chat message roles. */
-export type AgentChatMessageRoleDto = 'user' | 'assistant' | 'developer';
+export type AgentChatMessageRoleDto = 'user' | 'assistant' | 'system';
 
 /** Request body for creating a user-owned agent. */
 export class CreateAgentDto {
@@ -43,7 +43,7 @@ export class UpdateAgentDto {
 /** Request message item for chatting with an agent. */
 export class AgentChatMessageDto {
   /** Role for the submitted chat message. */
-  @IsIn(['user', 'assistant', 'developer'])
+  @IsIn(['user', 'assistant', 'system'])
   readonly role!: AgentChatMessageRoleDto;
 
   /** Text content for the submitted chat message. */
@@ -65,7 +65,7 @@ export class AgentChatRequestDto {
 }
 
 /** HTTP response typing for streamed agent chat output. */
-export type AgentChatResponseDto = AsyncIterable<string>;
+export type AgentChatResponseDto = ReadableStream;
 
 /** HTTP response for a newly created agent. */
 export interface CreatedAgentDto {
